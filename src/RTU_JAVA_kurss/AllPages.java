@@ -52,7 +52,6 @@ class LoginPage implements ActionListener {
         loginPageFrame.add(rightSideLabel);
         loginPageFrame.setLayout(null);
         loginPageFrame.setVisible(true);
-        //coments
     }
 
     @Override
