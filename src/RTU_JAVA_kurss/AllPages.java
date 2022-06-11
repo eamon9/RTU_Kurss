@@ -1,11 +1,13 @@
 package RTU_JAVA_kurss;
 
 import javax.swing.*;
+import javax.xml.stream.FactoryConfigurationError;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
@@ -70,7 +72,9 @@ class LoginPage implements ActionListener, MouseListener {
     JLabel rightSideLabel= new JLabel();
     JTextField mailTextField= new JTextField();
     JPasswordField passwordField= new JPasswordField();
-    JButton loginBtn= new JButton();
+    JTextField fakePasswordField= new JTextField();
+    JButton loginBtn= new JButton("Pieslēgties");
+    JButton registrationBtn= new JButton("Reģistrēties");
 
     LoginPage() {
         loginPageFrame.setTitle("Document Solutions Login Page"); // izveido virsrakstu
@@ -82,23 +86,50 @@ class LoginPage implements ActionListener, MouseListener {
 
         mailTextField.setBounds(60, 140, 250, 45);
         mailTextField.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+        mailTextField.setForeground(Color.GRAY);
         mailTextField.setOpaque(true);
         mailTextField.setText("Jūsu e-pasta adrese");
+        mailTextField.setEditable(false);
         mailTextField.addMouseListener(this);
+
+        fakePasswordField.setBounds(60, 220, 250, 45);
+        fakePasswordField.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+        fakePasswordField.setForeground(Color.GRAY);
+        fakePasswordField.setOpaque(true);
+        fakePasswordField.setText("Parole");
+        fakePasswordField.setEditable(false);
+        fakePasswordField.addMouseListener(this);
 
         passwordField.setBounds(60, 220, 250, 45);
         passwordField.setFont(new Font("Times New Roman", Font.BOLD, 24));
         passwordField.setOpaque(true);
-        passwordField.setText("******");
-        passwordField.addMouseListener(this);
+        passwordField.setVisible(false);
+
+        loginBtn.setBounds(80, 300, 200, 50);
+        loginBtn.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        loginBtn.setOpaque(true);
+        loginBtn.setBorderPainted(false);
+        loginBtn.setBackground(new Color(184, 229, 154));
+        loginBtn.setFocusable(false);
+        loginBtn.addActionListener(this);
 
 //Ja lietotājs NAV reģistrēts, label un to komponentes
         notRegisteredUserLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
         notRegisteredUserLabel.setForeground(new Color(7, 51, 51, 205));
         notRegisteredUserLabel.setBounds(60, 60, 250, 50);
 
-//left side and right side label
+        registrationBtn.setBounds(80, 140, 200, 50);
+        registrationBtn.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        registrationBtn.setOpaque(true);
+        registrationBtn.setBorderPainted(false);
+        registrationBtn.setBackground(new Color(184, 229, 154));
+        registrationBtn.setFocusable(false);
+        registrationBtn.addActionListener(this);
+
+//left side label
+        leftSideLabel.add(loginBtn);
         leftSideLabel.add(mailTextField);
+        leftSideLabel.add(fakePasswordField);
         leftSideLabel.add(passwordField);
         leftSideLabel.add(textField);
         leftSideLabel.add(registeredUserLabel);
@@ -106,6 +137,8 @@ class LoginPage implements ActionListener, MouseListener {
         leftSideLabel.setBounds(65, 100, 365, 500);
         leftSideLabel.setBackground(new Color(96, 94, 94, 76)); // 96, 94, 94, 76 Part1
 
+//right side label
+        rightSideLabel.add(registrationBtn);
         rightSideLabel.add(notRegisteredUserLabel);
         rightSideLabel.setOpaque(true);
         rightSideLabel.setBounds(480, 100, 350, 500);
@@ -120,16 +153,30 @@ class LoginPage implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-    }
+        // !!!!!!!  Projektam tuvojoties beigām, šeit jāsasaista ar datubāzi,
+        // kas pārbauda, vai ir šāds lietotājvārds ar attiecīgo paroli
+        // !!!!!!!                                     !!!!!!!!!!!!!!!!!!!!!!
+        if(e.getSource().equals(loginBtn)) {
+            String pas= String.valueOf(passwordField.getPassword());
+            boolean isAlpha= CheckIfFieldsCorrect(mailTextField.getText());
+            System.out.println("CheckFieldCorrect= "+isAlpha);
+            if(isAlpha && pas.equals("qwerty")) {
+                loginPageFrame.dispose();
+                new OrderePageSelectItem();
+            } //End inner if else statement
+        } //End if else statement
+    } //End actionPerformed()
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getSource().equals(mailTextField) && (mailTextField.getText().equals("Jūsu e-pasta adrese"))) {
+            mailTextField.setEditable(true);
+            mailTextField.setForeground(Color.BLACK);
             mailTextField.setText("");
         }
-        if(e.getSource().equals(passwordField) && passwordField.getCaretPosition()== 6){
-            passwordField.setText("");
+        if(e.getSource().equals(fakePasswordField)) {
+            fakePasswordField.setVisible(false);
+            passwordField.setVisible(true);
         }
     }
 
@@ -152,7 +199,29 @@ class LoginPage implements ActionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+    boolean CheckIfFieldsCorrect(String name) {
+        if(name.contains("@") && name.contains(".")) {
+            System.out.println("Yes "+name+" contains '@' and '.'");
+            return true;
+        } else{
+            System.out.println("No "+name+" doesn't contains '@' and '.'");
+            return false;
+        }
+
+    }
 } //End LoginPage class
+
+class RegistrationPage implements ActionListener {
+    RegistrationPage() {
+
+    } //End RegistrationPage()
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    } //End actionPerformed()
+} //End RegistrationPage class
 
 class OrderePageSelectItem implements ActionListener {
 
@@ -163,7 +232,7 @@ class OrderePageSelectItem implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-    }
+    } //End actionPerformed()
 } //End OrderePageSelectItem class
 
 
