@@ -14,6 +14,5 @@ public class MyFrame extends JFrame {
         this.setLocationRelativeTo(null); // rāmis būs pa vidu ekrānam
         this.getContentPane().setBackground(new Color(173, 224, 203)); // nomaina fona krāsu //49, 48, 148 Part1
         //this.add(panel);
-        //this.setVisible(true); // padara rāmi redzamu
     }
 }
