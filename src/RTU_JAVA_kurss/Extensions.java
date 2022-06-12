@@ -56,6 +56,7 @@ class MyLabel extends JLabel {
     }
 
     MyLabel(String text, int x, int y, int weight, int height, int letterSize) {
+        this.setText(text);
         this.setForeground(new Color(7, 105, 64, 190));
         this.setFont(new Font("Times New Roman", Font.BOLD, letterSize));
         this.setBounds(x, y, weight, height);

@@ -6,15 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.lang.reflect.Method;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
     MyFrame mainPage= new MyFrame("Document Solutions Main Page");
     JLabel titleLabel= new JLabel("Document Solutions");
-    MyLabel subTitlelabel1;
-    MyLabel subTitlelabel2;
-    MyLabel subTitlelabel3;
+    MyLabel subTitlelabel1= new MyLabel("Mēs GLABĀJAM", 250, 270, 250, 50, 20);
+    MyLabel subTitlelabel2= new MyLabel("SMALCINĀM,", 400, 290, 250, 50, 20);
+    MyLabel subTitlelabel3= new MyLabel("IZNĪCINĀM.", 520, 310, 250, 50, 20);
     MyButton startBtn= new MyButton("Sākt", 350, 450, 200, 50);
 
     MainPage() {
@@ -23,9 +22,6 @@ class MainPage implements ActionListener {
         titleLabel.setBounds(200, 100, 600, 300);
 
         startBtn.addActionListener(this);
-        subTitlelabel1= new MyLabel("Mēs GLABĀJAM", 250, 270, 250, 50, 20);
-        subTitlelabel2= new MyLabel("SMALCINĀM,", 400, 290, 250, 50, 20);
-        subTitlelabel3= new MyLabel("IZNĪCINĀM.", 520, 310, 250, 50, 20);
 
         //Šeit jāpačeko- kautkas neiet....
         MyLabel[] subLabels= new MyLabel[] {subTitlelabel1, subTitlelabel2, subTitlelabel3};
@@ -199,24 +195,24 @@ class RegistrationPage implements ActionListener {
         personGroup= new ButtonGroup(); // grupēšana nepieciešama, lai varētu atzīmēt tikai vienu no izvēlētajiem variantiem
         personGroup.add(individualRadioBtn);
         personGroup.add(juridicalRadioBtn);
-
+// visi 'label' priekš juridiskās daļas, kam noklusējumā jābūt slēptiem
         MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
         for (int i = 0; i < labelsForJuridical.length; i++) {
             labelsForJuridical[i].setVisible(false);
             mainLabel.add(labelsForJuridical[i]);
         }
-
+// visi 'label' priekš privātpersonas daļas, kam noklusējumā jābūt redzamiem
         MyLabel[] labelsForIndividual= new MyLabel[] {mailLabel, mobNrLabel, surnameLabel, nameLabel};
         for (int i = 0; i < labelsForIndividual.length; i++) {
             mainLabel.add(labelsForIndividual[i]);
         }
-
+// visi 'TextField' priekš juridiskās daļas, kam noklusējumā jābūt slēptiem un tiek pievienoti mainLabel klasei ar .add() Metodi
         MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
         for (int i = 0; i < juridicalTF.length; i++) {
             juridicalTF[i].setVisible(false);
             mainLabel.add(juridicalTF[i]);
         }
-
+// visi 'TextField' priekš privātpersonu daļas tiek pievienoti mainLabel klasei ar Metodi .add();
         MyTextField[] individualTF= new MyTextField[] {mobNrTF, mailTF, surnameTF, nameTF};
         for (int i = 0; i < individualTF.length; i++) {
             mainLabel.add(individualTF[i]);
