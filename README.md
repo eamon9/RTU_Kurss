@@ -29,7 +29,7 @@ Nozari vai jomu var izvēlēties brīvi.
 3) operatora sadaļa +
 4) meklēšana pēc >=2 kritērijiem +
 5) fails / datubāze + x 2
-6) >= 1 lietotāja definētā klase +
+6) vismaz 1 lietotāja definētā klase +
 7) tīmekļa saskarne / konsole +
 8) iespēja iesniegt vairākus pieteikumus pēc kārtas+
 9) unikāla numura piešķiršana katram pieteikumam +
