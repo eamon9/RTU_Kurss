@@ -54,6 +54,12 @@ class MyLabel extends JLabel {
         //this.setForeground(new Color(7, 51, 51, 205));
         this.setBounds(x, y, width, height);
     }
+
+    MyLabel(String text, int x, int y, int weight, int height, int letterSize) {
+        this.setForeground(new Color(7, 105, 64, 190));
+        this.setFont(new Font("Times New Roman", Font.BOLD, letterSize));
+        this.setBounds(x, y, weight, height);
+    }
 }
 
 class MyTransparentLabel extends  JLabel {

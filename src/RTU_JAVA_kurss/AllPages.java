@@ -6,45 +6,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.Method;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
     MyFrame mainPage= new MyFrame("Document Solutions Main Page");
     JLabel titleLabel= new JLabel("Document Solutions");
-    JLabel subTitleLabel1= new JLabel("Mēs GLABĀJAM,");
-    JLabel subTitleLabel2= new JLabel("SMALCINĀM,");
-    JLabel subTitleLabel3= new JLabel("IZNĪCINĀM.");
-    JButton startBtn= new JButton("Sākt");
+    MyLabel subTitlelabel1;
+    MyLabel subTitlelabel2;
+    MyLabel subTitlelabel3;
+    MyButton startBtn= new MyButton("Sākt", 350, 450, 200, 50);
 
     MainPage() {
         titleLabel.setForeground(new Color(11, 87, 3));
         titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 60));
         titleLabel.setBounds(200, 100, 600, 300);
 
-        subTitleLabel1.setForeground(new Color(7, 105, 64, 190));
-        subTitleLabel1.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        subTitleLabel1.setBounds(250, 270, 250, 50);
-
-        subTitleLabel2.setForeground(new Color(7, 105, 64, 190));
-        subTitleLabel2.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        subTitleLabel2.setBounds(400, 290, 250, 50);
-
-        subTitleLabel3.setForeground(new Color(7, 105, 64, 190));
-        subTitleLabel3.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        subTitleLabel3.setBounds(520, 310, 250, 50);
-
-        startBtn.setBounds(350, 450, 200, 50);
-        startBtn.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        startBtn.setOpaque(true);
-        startBtn.setBorderPainted(false);
-        startBtn.setBackground(new Color(184, 229, 154));
-        startBtn.setFocusable(false);
         startBtn.addActionListener(this);
+        subTitlelabel1= new MyLabel("Mēs GLABĀJAM", 250, 270, 250, 50, 20);
+        subTitlelabel2= new MyLabel("SMALCINĀM,", 400, 290, 250, 50, 20);
+        subTitlelabel3= new MyLabel("IZNĪCINĀM.", 520, 310, 250, 50, 20);
+
+        //Šeit jāpačeko- kautkas neiet....
+        MyLabel[] subLabels= new MyLabel[] {subTitlelabel1, subTitlelabel2, subTitlelabel3};
+        for (int i = 0; i < subLabels.length; i++) {
+            mainPage.add(subLabels[i]);
+        }
 
         mainPage.add(startBtn);
-        mainPage.add(subTitleLabel3);
-        mainPage.add(subTitleLabel2);
-        mainPage.add(subTitleLabel1);
         mainPage.add(titleLabel);
         mainPage.setLayout(null);
         mainPage.setVisible(true); // padara rāmi redzamu
@@ -211,48 +200,41 @@ class RegistrationPage implements ActionListener {
         personGroup.add(individualRadioBtn);
         personGroup.add(juridicalRadioBtn);
 
-        companyNameLabel.setVisible(false);
-        companyNameTF.setVisible(false);
-        companyRegLabel.setVisible(false);
-        companyRegTF.setVisible(false);
-        pvnLabel.setVisible(false);
-        pvnTF.setVisible(false);
-        bankLabel.setVisible(false);
-        bankTF.setVisible(false);
-        companyAdressLabel.setVisible(false);
-        companyAdressTF.setVisible(false);
-        ibanLabel.setVisible(false);
-        ibanTF.setVisible(false);
+        MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
+        for (int i = 0; i < labelsForJuridical.length; i++) {
+            labelsForJuridical[i].setVisible(false);
+            mainLabel.add(labelsForJuridical[i]);
+        }
+
+        MyLabel[] labelsForIndividual= new MyLabel[] {mailLabel, mobNrLabel, surnameLabel, nameLabel};
+        for (int i = 0; i < labelsForIndividual.length; i++) {
+            mainLabel.add(labelsForIndividual[i]);
+        }
+
+        MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
+        for (int i = 0; i < juridicalTF.length; i++) {
+            juridicalTF[i].setVisible(false);
+            mainLabel.add(juridicalTF[i]);
+        }
+
+        MyTextField[] individualTF= new MyTextField[] {mobNrTF, mailTF, surnameTF, nameTF};
+        for (int i = 0; i < individualTF.length; i++) {
+            mainLabel.add(individualTF[i]);
+        }
 
         individualRadioBtn.addActionListener(this);
         juridicalRadioBtn.addActionListener(this);
+        backBtn.addActionListener(this);
+        nextBtn.addActionListener(this);
 
-        mainLabel.add(bankTF);
-        mainLabel.add(ibanTF);
-        mainLabel.add(companyAdressTF);
-        mainLabel.add(pvnTF);
-        mainLabel.add(companyRegTF);
-        mainLabel.add(companyNameTF);
         mainLabel.add(repeatPasswordTF);
         mainLabel.add(passwordTF);
-        mainLabel.add(mobNrTF);
-        mainLabel.add(mailTF);
-        mainLabel.add(surnameTF);
-        mainLabel.add(nameTF);
-        mainLabel.add(bankLabel);
-        mainLabel.add(ibanLabel);
-        mainLabel.add(pvnLabel);
-        mainLabel.add(companyAdressLabel);
-        mainLabel.add(companyRegLabel);
-        mainLabel.add(companyNameLabel);
         mainLabel.add(repeatPasswordLabel);
         mainLabel.add(passwordLabel);
-        mainLabel.add(mailLabel);
-        mainLabel.add(mobNrLabel);
-        mainLabel.add(surnameLabel);
-        mainLabel.add(nameLabel);
+
         mainLabel.add(nextBtn);
         mainLabel.add(backBtn);
+
         mainLabel.add(individualRadioBtn);
         mainLabel.add(juridicalRadioBtn);
 
@@ -272,33 +254,27 @@ class RegistrationPage implements ActionListener {
             // lai varētu turpināt..
         }
         if(e.getSource().equals(individualRadioBtn)) {
-            companyNameLabel.setVisible(false);
-            companyNameTF.setVisible(false);
-            companyRegLabel.setVisible(false);
-            companyRegTF.setVisible(false);
-            pvnLabel.setVisible(false);
-            pvnTF.setVisible(false);
-            bankLabel.setVisible(false);
-            bankTF.setVisible(false);
-            companyAdressLabel.setVisible(false);
-            companyAdressTF.setVisible(false);
-            ibanLabel.setVisible(false);
-            ibanTF.setVisible(false);
+            MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
+            for (int i = 0; i < labelsForJuridical.length; i++) {
+                labelsForJuridical[i].setVisible(false);
+            }
+
+            MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
+            for (int i = 0; i < juridicalTF.length; i++) {
+                juridicalTF[i].setVisible(false);
+            }
         }
 
         if(e.getSource().equals((juridicalRadioBtn))) {
-            companyNameLabel.setVisible(true);
-            companyNameTF.setVisible(true);
-            companyRegLabel.setVisible(true);
-            companyRegTF.setVisible(true);
-            pvnLabel.setVisible(true);
-            pvnTF.setVisible(true);
-            bankLabel.setVisible(true);
-            bankTF.setVisible(true);
-            companyAdressLabel.setVisible(true);
-            companyAdressTF.setVisible(true);
-            ibanLabel.setVisible(true);
-            ibanTF.setVisible(true);
+            MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
+            for (int i = 0; i < labelsForJuridical.length; i++) {
+                labelsForJuridical[i].setVisible(true);
+            }
+
+            MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
+            for (int i = 0; i < juridicalTF.length; i++) {
+                juridicalTF[i].setVisible(true);
+            }
         }
     } //End actionPerformed()
 } //End RegistrationPage class
