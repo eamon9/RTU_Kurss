@@ -38,6 +38,7 @@ class MainPage implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(startBtn)) {
+            startBtn.setBackground(new Color(141, 210, 93));
             mainPage.dispose();
             new LoginPage();
         } //End if else statement
@@ -93,6 +94,8 @@ class LoginPage implements ActionListener, MouseListener {
         // kas pārbauda, vai ir šāds lietotājvārds ar attiecīgo paroli
         // !!!!!!!                                     !!!!!!!!!!!!!!!!!!!!!!
         if(e.getSource().equals(loginBtn)) {
+            loginBtn.setBackground(new Color(141, 210, 93));
+            registrationBtn.setBackground(new Color(184, 229, 154));
             String pas= String.valueOf(passwordField.getPassword());
             boolean isAlpha= CheckIfFieldsCorrect(mailTextField.getText());
             System.out.println("CheckFieldCorrect= "+isAlpha);
@@ -102,6 +105,8 @@ class LoginPage implements ActionListener, MouseListener {
             } //End inner if else statement
         } //End if else statement
         if(e.getSource().equals(registrationBtn)) {
+            registrationBtn.setBackground(new Color(141, 210, 93));
+            loginBtn.setBackground(new Color(184, 229, 154));
             loginPageFrame.dispose();
             new RegistrationPage();
         }
@@ -242,10 +247,14 @@ class RegistrationPage implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(backBtn)) {
+            backBtn.setBackground(new Color(141, 210, 93));
+            nextBtn.setBackground(new Color(184, 229, 154));
             registrationPageFrame.dispose();
             new LoginPage();
         }
         if(e.getSource().equals(nextBtn)) {
+            nextBtn.setBackground(new Color(141, 210, 93));
+            backBtn.setBackground(new Color(184, 229, 154));
             // jāpārbauda vai visi lauki ir aizpildīti un vai atbilst rakstzīmes norādītajam,
             // lai varētu turpināt..
         }
@@ -275,16 +284,278 @@ class RegistrationPage implements ActionListener {
     } //End actionPerformed()
 } //End RegistrationPage class
 
-class OrderePageSelectItem implements ActionListener {
+class OrderePageSelectItem implements ActionListener, MouseListener {
+    MyFrame orderPageFrame= new MyFrame("Document Solutions Order Page");
+    MyTransparentLabel leftSideLabel= new MyTransparentLabel(65, 100, 240, 500);
+    MyTransparentLabel middleSideLabel= new MyTransparentLabel(330, 100, 240, 500);
+    MyTransparentLabel rightSideLabel= new MyTransparentLabel(600, 100, 240, 500);
+    MyTransparentTextLabel leftSideTextLabel= new MyTransparentTextLabel("Dokumentu glabāšana", 30, 20, 240, 100);
+    MyTransparentTextLabel middleSideTextLabel= new MyTransparentTextLabel("Smalcināšana / iznīcināšana", 10, 20, 240, 100);
+    MyTransparentTextLabel rightSideTextLabel= new MyTransparentTextLabel("Arhīva sakārtošana", 40, 20, 240, 100);
 
     OrderePageSelectItem() {
 
+        leftSideLabel.add(leftSideTextLabel);
+        middleSideLabel.add(middleSideTextLabel);
+        rightSideLabel.add(rightSideTextLabel);
+
+        MyTransparentLabel[] labels= new MyTransparentLabel[] {leftSideLabel, middleSideLabel, rightSideLabel};
+        for (int i = 0; i < labels.length; i++) {
+            orderPageFrame.add(labels[i]);
+            labels[i].addMouseListener(this);
+        }
+
+        orderPageFrame.setLayout(null);
+        orderPageFrame.setVisible(true);
     } //End OrderePageSelectItem()
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
     } //End actionPerformed()
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        MyTransparentLabel[] labels= new MyTransparentLabel[] {leftSideLabel, middleSideLabel, rightSideLabel};
+        for (int i = 0; i < labels.length; i++) {
+            if(e.getSource().equals(labels[0])) {
+                orderPageFrame.dispose();
+                new OrderPage_StoreDocuments();
+            }
+            if(e.getSource().equals(labels[1])) {
+                orderPageFrame.dispose();
+                new OrderPage_ShreddingDocuments();
+            }
+            if(e.getSource().equals(labels[2])) {
+                orderPageFrame.dispose();
+                new OrderPage_ArchiveDocuments();
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        MyTransparentLabel[] labels= new MyTransparentLabel[] {leftSideLabel, middleSideLabel, rightSideLabel};
+        for (int i = 0; i < labels.length; i++) {
+            if(e.getSource().equals(labels[i])) {
+                labels[i].setBackground(new Color(184, 229, 154)); //new Color(46, 149, 169, 255) color before entered
+            }
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        MyTransparentLabel[] labels= new MyTransparentLabel[] {leftSideLabel, middleSideLabel, rightSideLabel};
+        for (int i = 0; i < labels.length; i++) {
+            if(e.getSource().equals(labels[i])) {
+                labels[i].setBackground(new Color(46, 149, 169, 255));
+            }
+        }
+    }
 } //End OrderePageSelectItem class
+
+class OrderPage_StoreDocuments implements ActionListener, MouseListener {
+    MyFrame storeDocumentsFrame= new MyFrame("Document Solutions Store Documents Page");
+    MyTransparentLabel leftSideLabel1= new MyTransparentLabel(65, 100, 240, 240);
+    MyTransparentLabel middleSideLabel1= new MyTransparentLabel(330, 100, 240, 240);
+    MyTransparentLabel rightSideLabel1= new MyTransparentLabel(600, 100, 240, 240);
+    MyTransparentLabel leftSideLabel2= new MyTransparentLabel(65, 365, 240, 240);
+    MyTransparentLabel middleSideLabel2= new MyTransparentLabel(330, 365, 240, 240);
+    MyTransparentLabel rightSideLabel2= new MyTransparentLabel(600, 365, 240, 240);
+// leftSideLabel1 componentes
+    MyTransparentLabel helpLabel1= new MyTransparentLabel(40, 40, 160, 70);
+    MyTransparentTextLabel leftSLabel1Text= new MyTransparentTextLabel("Daudzums kastēs *", 40, 0, 240, 50);
+    MyLabel helpTextLabel1= new MyLabel("VADOTIES PĒC TĀ, KA", 5, 10, 160, 15, 12);
+    MyLabel helpTextLabel2= new MyLabel("VIENĀ KASTĒ SALIEN", 5, 30, 160, 15, 12);
+    MyLabel helpTextLabel3= new MyLabel("5 REĢISTRA MAPES", 5, 50, 160, 15, 12);
+    MyTextField boxTextF= new MyTextField(40, 140, 100, 40);
+    MyTransparentTextLabel boxSideText= new MyTransparentTextLabel("(- kastes )", 150, 140, 100, 40);
+
+// middleSideLabel1 componentes
+    MyTransparentTextLabel middleSLabel1Text= new MyTransparentTextLabel("Stāvs / Pgrabs", 60, 0, 240, 50);
+    MyTransparentTextLabel middleSLabel1Text2= new MyTransparentTextLabel("Lifts", 100, 30, 240, 50);
+    MyButton yesBtn= new MyButton("IR", 20, 70, 90, 50);
+    MyButton noBtn= new MyButton("NAV", 130, 70, 90, 50);
+    MyTextField boxTextF2= new MyTextField(40, 140, 100, 40);
+    MyTransparentTextLabel boxSideText2= new MyTransparentTextLabel("(- stāvi )", 150, 140, 100, 40);
+
+// rightSideLabel1 componentes
+    MyTransparentTextLabel rightSLabel1Text= new MyTransparentTextLabel("Adrese", 90, 0, 240, 50);
+    MyTextArea boxTextArea= new MyTextArea(20, 40, 200, 160);
+
+// leftSideLabel2 componentes
+    MyTransparentTextLabel leftSLabel2Text= new MyTransparentTextLabel("Darba laiks", 60, 0, 240, 50);
+
+// middleSideLabel2 componentes
+    MyTransparentTextLabel middleSLabel2Text= new MyTransparentTextLabel("Piezīmes", 70, 0, 240, 50);
+    MyTextArea boxTextArea2= new MyTextArea(20, 40, 200, 160);
+
+// rightSideLabel2 componentes
+    MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
+    OrderPage_StoreDocuments() {
+// rightSideLabel2 componentes ##################################
+
+        nextBtn.addActionListener(this);
+
+        rightSideLabel2.add(nextBtn);
+
+// ###############################################################
+
+// middleSideLabel2 componentes ##################################
+
+        middleSideLabel2.add(boxTextArea2);
+        middleSideLabel2.add(middleSLabel2Text);
+
+// ###############################################################
+
+// leftSideLabel2 componentes ####################################
+
+
+        leftSideLabel2.add(leftSLabel2Text);
+
+// ###############################################################
+
+// rightSideLabel1 componentes ####################################
+
+        boxTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
+        boxTextArea.setForeground(Color.GRAY);
+        boxTextArea.setEditable(false);
+
+        boxTextArea.addMouseListener(this);
+
+        rightSideLabel1.add(boxTextArea);
+        rightSideLabel1.add(rightSLabel1Text);
+// ###############################################################
+
+// middleSideLabel1 componentes ####################################
+        boxTextF2.setVisible(false);
+        boxSideText2.setVisible(false);
+
+        yesBtn.addActionListener(this);
+        noBtn.addActionListener(this);
+
+        middleSideLabel1.add(boxTextF2);
+        middleSideLabel1.add(boxSideText2);
+        middleSideLabel1.add(noBtn);
+        middleSideLabel1.add(yesBtn);
+        middleSideLabel1.add(middleSLabel1Text);
+        middleSideLabel1.add(middleSLabel1Text2);
+
+// ###############################################################
+
+// leftSideLabel1 componentes ####################################
+// Change color of helpText
+        helpTextLabel1.setForeground(Color.BLACK);
+        helpTextLabel2.setForeground(Color.BLACK);
+        helpTextLabel3.setForeground(Color.BLACK);
+// leftSLabel1Text add Mouse Listiner
+        leftSLabel1Text.addMouseListener(this);
+// helpLabel1 setUp
+        helpLabel1.setBackground(new Color(173, 224, 203));
+        helpLabel1.add(helpTextLabel1);
+        helpLabel1.add(helpTextLabel2);
+        helpLabel1.add(helpTextLabel3);
+        helpLabel1.setVisible(false);
+// leftSideLabel1 setUp
+        leftSideLabel1.add(boxSideText);
+        leftSideLabel1.add(boxTextF);
+        leftSideLabel1.add(leftSLabel1Text);
+        leftSideLabel1.add(helpLabel1);
+// ###############################################################
+// All labels added to storeDocumentsFrame
+        MyTransparentLabel[] labels= new MyTransparentLabel[] {leftSideLabel1, middleSideLabel1, rightSideLabel1, leftSideLabel2, middleSideLabel2, rightSideLabel2};
+        for (int i = 0; i < labels.length; i++) {
+            storeDocumentsFrame.add(labels[i]);
+        }
+        storeDocumentsFrame.setLayout(null);
+        storeDocumentsFrame.setVisible(true);
+    } // End OrderPage_StoreDocuments()
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(nextBtn)) {
+            // šeit ir nepieciešams kods, kas aptver visu ievadīto info un nogādā tālāk
+            storeDocumentsFrame.dispose();
+            new MainPage();
+        }
+        if(e.getSource().equals(yesBtn)) {
+            yesBtn.setBackground(new Color(141, 210, 93));
+            noBtn.setBackground(new Color(184, 229, 154));
+            boxTextF2.setVisible(false);
+            boxSideText2.setVisible(false);
+        }
+        if(e.getSource().equals(noBtn)) {
+            yesBtn.setBackground(new Color(184, 229, 154));
+            noBtn.setBackground(new Color(141, 210, 93));
+            boxTextF2.setVisible(true);
+            boxSideText2.setVisible(true);
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(e.getSource().equals(boxTextArea)) {
+            boxTextArea.setText("");
+            boxTextArea.setForeground(Color.BLACK);
+            boxTextArea.setEditable(true);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if(e.getSource().equals(leftSLabel1Text)) {
+            helpLabel1.setVisible(true);
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if(e.getSource().equals(leftSLabel1Text)) {
+            helpLabel1.setVisible(false);
+        }
+    }
+} //End class OrderPage_StoreDocuments
+
+class OrderPage_ShreddingDocuments implements ActionListener {
+    MyFrame shredDocumentsFrame= new MyFrame("Document Solutions Shredding Documents Page");
+    OrderPage_ShreddingDocuments() {
+        shredDocumentsFrame.setLayout(null);
+        shredDocumentsFrame.setVisible(true);
+    } //End OrderPage_ShreddingDocuments()
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+} //End class OrderPage_ShreddingDocuments
+
+class OrderPage_ArchiveDocuments implements ActionListener {
+    MyFrame archiveDocumentsFrame= new MyFrame("Document Solutions Archive Documents Page");
+    OrderPage_ArchiveDocuments() {
+        archiveDocumentsFrame.setLayout(null);
+        archiveDocumentsFrame.setVisible(true);
+    } //End OrderPage_ArchiveDocuments()
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+} //End class OrderPage_ArchiveDocuments
 
 

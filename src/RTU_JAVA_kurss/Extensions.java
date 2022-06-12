@@ -98,6 +98,15 @@ class MyTextField extends JTextField {
     }
 }
 
+class MyTextArea extends JTextArea {
+
+    MyTextArea(int x, int y, int width, int height) {
+        this.setBounds(x, y, width, height);
+        this.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        this.setOpaque(true);
+    }
+}
+
 class MyButton extends JButton {
     MyButton(String text, int x, int y, int width, int height) {
         this.setText(text);
