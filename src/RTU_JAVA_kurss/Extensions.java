@@ -51,7 +51,7 @@ class MyLabel extends JLabel {
     MyLabel(String text, int x, int y, int width, int height) {
         this.setText(text);
         this.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        this.setForeground(new Color(7, 51, 51, 205));
+        //this.setForeground(new Color(7, 51, 51, 205));
         this.setBounds(x, y, width, height);
     }
 }
@@ -60,7 +60,7 @@ class MyTransparentLabel extends  JLabel {
     MyTransparentLabel(int x, int y, int width, int height) {
         this.setOpaque(true);
         this.setBounds(x, y, width, height);
-        this.setBackground(new Color(96, 94, 94, 76));
+        this.setBackground(new Color(46, 149, 169, 255)); //96, 94, 94, 76 part2
     }
 }
 
@@ -72,8 +72,14 @@ class MyTransparentTextLabel extends JLabel {
         this.setForeground(new Color(7, 51, 51, 205));
     }
 }
-
 class MyTextField extends JTextField {
+
+    MyTextField(int x, int y, int width, int height) {
+        this.setBounds(x, y, width, height);
+        this.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+        this.setOpaque(true);
+    }
+
     MyTextField(String text, int x, int y, int width, int height, boolean showBtn) {
         this.setBounds(x, y, width, height);
         this.setFont(new Font("Times New Roman", Font.PLAIN, 22));
@@ -104,7 +110,15 @@ class MyRadioButton extends JRadioButton {
         this.setFont(new Font("Times New Roman", Font.BOLD, 18));
         this.setForeground(new Color(7, 51, 51, 205));
         this.setOpaque(true);
-        this.setBackground(new Color(89, 141, 117, 255));
+        this.setBackground(new Color(46, 149, 169, 255)); //89, 141, 117, 255 part2
+    }
+}
+
+class MyPasswordField extends JPasswordField {
+    MyPasswordField(int x, int y, int width, int height) {
+        this.setBounds(x, y, width, height);
+        this.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        this.setOpaque(true);
     }
 }
 
