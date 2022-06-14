@@ -6,9 +6,13 @@ public class Main {
         //new MainPage();
         //new LoginPage();
         //new RegistrationPage();
+
         //new OrderePageSelectItem();
-        new OrderPage_StoreDocuments();
+        //new OrderPage_StoreDocuments();
         //new OrderPage_ShreddingDocuments();
         //new OrderPage_ArchiveDocuments();
+
+        //new PreviousOrders();
+        new AdministratorPage();
     }
 }
