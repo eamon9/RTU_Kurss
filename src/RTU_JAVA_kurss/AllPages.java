@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.*;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
@@ -45,7 +46,7 @@ class MainPage implements ActionListener {
     } //End actionPerformed()
 } //End MainPage class
 
-class LoginPage implements ActionListener, MouseListener {
+class LoginPage extends Component implements ActionListener, MouseListener {
 
     MyFrame loginPageFrame= new MyFrame("Document Solutions Login Page");
     MyTransparentTextLabel registeredUserLabel= new MyTransparentTextLabel("Esmu reģistrēts lietotājs", 85, 60, 250, 50);
@@ -90,6 +91,21 @@ class LoginPage implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(loginBtn)) {
+            String mail= mailTextField.getText();
+            String password= String.valueOf(passwordField.getPassword());
+
+            user = getAuthenticalUser(mail, password);
+
+            if(user != null) {
+                System.out.println("Sveiks!"+user.name+"Jūsu e-pasts: "+user.mail+"Tel. nr.: "+user.mobile);
+                loginPageFrame.dispose();
+                new OrderePageSelectItem();
+            }
+            else {
+                JOptionPane.showMessageDialog(LoginPage.this, "Lietotājvārds un/vai parole nepareiza", "Mēģiniet vēlreiz!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         // !!!!!!!  Projektam tuvojoties beigām, šeit jāsasaista ar datubāzi,
         // kas pārbauda, vai ir šāds lietotājvārds ar attiecīgo paroli
         // !!!!!!!                                     !!!!!!!!!!!!!!!!!!!!!!
@@ -158,9 +174,43 @@ class LoginPage implements ActionListener, MouseListener {
         }
 
     }
+
+    public User user;
+    private User getAuthenticalUser(String mail, String password) {
+        User user= null;
+        final String DB_URL= "jdbc:mysql://localhost:3306/JAVA_IT";
+        final String USERNAME= "root";
+        final String PASSWORD= "e6127609-";
+
+        try {
+            Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            connection.createStatement();
+            String sql= "SELECT * FROM users WHERE mail=? AND password=?";
+            PreparedStatement preparedStatement= connection.prepareStatement(sql);
+            preparedStatement.setString(1, mail);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet= preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                user = new User();
+                user.name= resultSet.getString("name");
+                user.surname= resultSet.getString("surname");
+                user.mail= resultSet.getString("mail");
+                user.password= resultSet.getString("password");
+                user.mobile= resultSet.getString("mobile");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
 } //End LoginPage class
 
-class RegistrationPage implements ActionListener {
+class RegistrationPage extends Component implements ActionListener {
     MyFrame registrationPageFrame= new MyFrame("Document Solutions registration Form");
     MyTransparentLabel mainLabel= new MyTransparentLabel(65, 100, 770, 500);
     MyRadioButton individualRadioBtn= new MyRadioButton("Privātpersona", 50, 10, 200, 50);
@@ -258,7 +308,8 @@ class RegistrationPage implements ActionListener {
         if(e.getSource().equals(nextBtn)) {
             nextBtn.setBackground(new Color(141, 210, 93));
             backBtn.setBackground(new Color(184, 229, 154));
-            // jāpārbauda vai visi lauki ir aizpildīti un vai atbilst rakstzīmes norādītajam,
+            registerUser();
+            // jāpārbauda vai visi lauki atbilst rakstzīmes norādītajam,
             // lai varētu turpināt..
         }
         if(e.getSource().equals(individualRadioBtn)) {
@@ -285,6 +336,82 @@ class RegistrationPage implements ActionListener {
             }
         }
     } //End actionPerformed()
+
+    User user;
+
+    private void registerUser() {
+        String name= nameTF.getText();
+        String surname= surnameTF.getText();
+        String mail= mailTF.getText();
+        String password= String.valueOf(passwordTF.getPassword());
+        String mobile= mobNrTF.getText();
+
+        if(name.isEmpty() || surname.isEmpty() || mail.isEmpty() || mobile.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Lūdzu aizpildiet visus laukus", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if(password.length() < 6) {
+            JOptionPane.showMessageDialog(this, "Jūsu izveidotā parole ir par mazu"+"\n"+"MIN 6simboli", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if(!mobile.matches("[0-9]+")) {
+            JOptionPane.showMessageDialog(this, "Mobīlais telefons jānorāda skaitļos!", "Mēģini vēlreiz!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        user= addUserToDatabase(name, surname, mail, password, mobile);
+        if(user != null) {
+            registrationPageFrame.dispose();
+            new LoginPage();
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "Neizdevās izveidot jaunu lietotāju", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private User addUserToDatabase(String name, String surname, String mail, String password,  String mobile) {
+        User user= null;
+        final String DB_URL= "jdbc:mysql://localhost:3306/JAVA_IT"; //jānorāda datubāzes lokācija, kas jau iepriekš ir izveidota
+        final String USERNAME= "root"; // šis ir noklusējuma username
+        final String PASSWORD= "e6127609-"; // šī ir izveidotā parole iekš MySQL
+
+        try{
+            Connection connection= DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            Statement statement = connection.createStatement();
+            String sql= "INSERT INTO users (name, surname, mail, password, mobile) "+ "VALUES (?, ?, ?, ?, ?) ";
+            PreparedStatement preparedStatement= connection.prepareStatement(sql);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, mail);
+            preparedStatement.setString(4, password);
+            preparedStatement.setString(5, mobile);
+
+            int addedRows= preparedStatement.executeUpdate();
+            if (addedRows > 0) {
+                user= new User();
+                user.name= name;
+                user.surname= surname;
+                user.mail= mail;
+                user.password= password;
+                user.mobile= mobile;
+            }
+
+            statement.close();
+            connection.close();
+        } catch (SQLException s) {
+            if(s.getErrorCode() == 1062) {
+                JOptionPane.showMessageDialog(this, "Šāds lietotājs/ e-pasts jau eksitē!", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
 } //End RegistrationPage class
 
 class OrderePageSelectItem implements ActionListener, MouseListener {
