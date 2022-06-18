@@ -7,14 +7,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.*;
+import java.util.Arrays;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
-    MyFrame mainPage= new MyFrame("Document Solutions Main Page");
+    MyFrame mainPageFrame = new MyFrame("Document Solutions Main Page");
     JLabel titleLabel= new JLabel("Document Solutions");
-    MyLabel subTitlelabel1= new MyLabel("Mēs GLABĀJAM", 250, 270, 250, 50, 20);
-    MyLabel subTitlelabel2= new MyLabel("SMALCINĀM,", 400, 290, 250, 50, 20);
-    MyLabel subTitlelabel3= new MyLabel("IZNĪCINĀM.", 520, 310, 250, 50, 20);
+    MyLabel subTitleLabel1 = new MyLabel("Mēs GLABĀJAM", 250, 270, 250, 50, 20);
+    MyLabel subTitleLabel2 = new MyLabel("SMALCINĀM,", 400, 290, 250, 50, 20);
+    MyLabel subTitleLabel3 = new MyLabel("IZNĪCINĀM.", 520, 310, 250, 50, 20);
     MyButton startBtn= new MyButton("Sākt", 350, 450, 200, 50);
 
     MainPage() {
@@ -24,23 +25,21 @@ class MainPage implements ActionListener {
 
         startBtn.addActionListener(this);
 
-        //Šeit jāpačeko- kautkas neiet....
-        MyLabel[] subLabels= new MyLabel[] {subTitlelabel1, subTitlelabel2, subTitlelabel3};
-        for (int i = 0; i < subLabels.length; i++) {
-            mainPage.add(subLabels[i]);
+        MyLabel[] subLabels= new MyLabel[] {subTitleLabel1, subTitleLabel2, subTitleLabel3};
+        for (MyLabel subLabel : subLabels) {
+            mainPageFrame.add(subLabel);
         }
-
-        mainPage.add(startBtn);
-        mainPage.add(titleLabel);
-        mainPage.setLayout(null);
-        mainPage.setVisible(true); // padara rāmi redzamu
+        mainPageFrame.add(startBtn);
+        mainPageFrame.add(titleLabel);
+        mainPageFrame.setLayout(null);
+        mainPageFrame.setVisible(true); // padara rāmi redzamu
     } //End MainPage()
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(startBtn)) {
             startBtn.setBackground(new Color(141, 210, 93));
-            mainPage.dispose();
+            mainPageFrame.dispose();
             new LoginPage();
         } //End if else statement
     } //End actionPerformed()
@@ -95,30 +94,23 @@ class LoginPage extends Component implements ActionListener, MouseListener {
             String mail= mailTextField.getText();
             String password= String.valueOf(passwordField.getPassword());
 
-            user = getAuthenticalUser(mail, password);
+            user = getAuthenticUser(mail, password);
 
             if(user != null) {
                 System.out.println("Sveiks!"+user.name+"Jūsu e-pasts: "+user.mail+"Tel. nr.: "+user.mobile);
                 loginPageFrame.dispose();
-                new OrderePageSelectItem();
+                new OrderPageSelectItem();
             }
             else {
                 JOptionPane.showMessageDialog(LoginPage.this, "Lietotājvārds un/vai parole nepareiza", "Mēģiniet vēlreiz!", JOptionPane.ERROR_MESSAGE);
             }
         }
-        // !!!!!!!  Projektam tuvojoties beigām, šeit jāsasaista ar datubāzi,
+        // !!!!!!!  Projektam turbojet beigām, šeit jāsasaista ar datubāzi,
         // kas pārbauda, vai ir šāds lietotājvārds ar attiecīgo paroli
         // !!!!!!!                                     !!!!!!!!!!!!!!!!!!!!!!
         if(e.getSource().equals(loginBtn)) {
             loginBtn.setBackground(new Color(141, 210, 93));
             registrationBtn.setBackground(new Color(184, 229, 154));
-            String pas= String.valueOf(passwordField.getPassword());
-            boolean isAlpha= CheckIfFieldsCorrect(mailTextField.getText());
-            System.out.println("CheckFieldCorrect= "+isAlpha);
-            if(isAlpha && pas.equals("qwerty")) {
-                loginPageFrame.dispose();
-                new OrderePageSelectItem();
-            } //End inner if else statement
         } //End if else statement
         if(e.getSource().equals(registrationBtn)) {
             registrationBtn.setBackground(new Color(141, 210, 93));
@@ -140,7 +132,6 @@ class LoginPage extends Component implements ActionListener, MouseListener {
         if(e.getSource().equals(fakePasswordField)) {
             fakePasswordField.setVisible(false);
             passwordField.setVisible(true);
-            //passwordField.setCaretPosition(0);
         }
     }
 
@@ -175,8 +166,9 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 
     }
 
+    public int userID;
     public User user;
-    private User getAuthenticalUser(String mail, String password) {
+    private User getAuthenticUser(String mail, String password) {
         User user= null;
         final String DB_URL= "jdbc:mysql://localhost:3306/JAVA_IT";
         final String USERNAME= "root";
@@ -190,6 +182,11 @@ class LoginPage extends Component implements ActionListener, MouseListener {
             PreparedStatement preparedStatement= connection.prepareStatement(sql);
             preparedStatement.setString(1, mail);
             preparedStatement.setString(2, password);
+            System.out.println(mail);
+
+            String sql1= "SELECT * FROM users WHERE UserID=?";
+            PreparedStatement preparedStatement2= connection.prepareStatement(sql1);
+            //userID= UserID;
 
             ResultSet resultSet= preparedStatement.executeQuery();
 
@@ -248,6 +245,10 @@ class RegistrationPage extends Component implements ActionListener {
     MyTextField ibanTF= new MyTextField(380, 400, 150, 40);
     MyTextField bankTF= new MyTextField(540, 400, 170, 40);
 
+    MyTextField[] allTextF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF, mobNrTF, mailTF, surnameTF, nameTF};
+    MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
+    MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
+
 
     RegistrationPage() {
         personGroup= new ButtonGroup(); // grupēšana nepieciešama, lai varētu atzīmēt tikai vienu no izvēlētajiem variantiem
@@ -299,6 +300,7 @@ class RegistrationPage extends Component implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        int falses= 0;
         if(e.getSource().equals(backBtn)) {
             backBtn.setBackground(new Color(141, 210, 93));
             nextBtn.setBackground(new Color(184, 229, 154));
@@ -309,28 +311,41 @@ class RegistrationPage extends Component implements ActionListener {
             nextBtn.setBackground(new Color(141, 210, 93));
             backBtn.setBackground(new Color(184, 229, 154));
             registerUser();
+            // šis jāpačeko, jo izpilde nav laba
+
+            /*if(passwordTF.getPassword().length== 0 || repeatPasswordTF.getPassword().length== 0) {
+                falses++;
+                System.out.println("Parolītes nav ievadītas");
+            }
+            for (int i = 0; i < allTextF.length; i++) {
+                if(allTextF[i].getText().equals("")) {
+                    falses++;
+                }
+            }
+            if(falses> 0) {
+                System.out.println(falses);
+                JOptionPane.showMessageDialog(this, "Lūdzu aizpildiet visus laukus", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else{
+
+                registrationPageFrame.dispose();
+                new LoginPage();
+            }*/
             // jāpārbauda vai visi lauki atbilst rakstzīmes norādītajam,
             // lai varētu turpināt..
         }
         if(e.getSource().equals(individualRadioBtn)) {
-            MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
             for (int i = 0; i < labelsForJuridical.length; i++) {
                 labelsForJuridical[i].setVisible(false);
             }
-
-            MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
             for (int i = 0; i < juridicalTF.length; i++) {
                 juridicalTF[i].setVisible(false);
             }
         }
-
         if(e.getSource().equals((juridicalRadioBtn))) {
-            MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
             for (int i = 0; i < labelsForJuridical.length; i++) {
                 labelsForJuridical[i].setVisible(true);
             }
-
-            MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
             for (int i = 0; i < juridicalTF.length; i++) {
                 juridicalTF[i].setVisible(true);
             }
@@ -362,9 +377,11 @@ class RegistrationPage extends Component implements ActionListener {
         }
 
         user= addUserToDatabase(name, surname, mail, password, mobile);
+        System.out.println("Visi useri: "+user);
         if(user != null) {
             registrationPageFrame.dispose();
             new LoginPage();
+            System.out.println(user);
         }
         else {
             JOptionPane.showMessageDialog(this, "Neizdevās izveidot jaunu lietotāju", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
@@ -414,23 +431,23 @@ class RegistrationPage extends Component implements ActionListener {
 
 } //End RegistrationPage class
 
-class OrderePageSelectItem implements ActionListener, MouseListener {
+class OrderPageSelectItem implements ActionListener, MouseListener {
     MyFrame orderPageFrame= new MyFrame("Document Solutions Order Page");
     MyTransparentLabel sideLabel1= new MyTransparentLabel(65, 100, 365, 500);
     MyTransparentLabel sideLabel2= new MyTransparentLabel(480, 100, 350, 500);
     MyTransparentLabel leftSideLabel= new MyTransparentLabel(65, 100, 240, 500);
     MyTransparentLabel middleSideLabel= new MyTransparentLabel(330, 100, 240, 500);
     MyTransparentLabel rightSideLabel= new MyTransparentLabel(600, 100, 240, 500);
-    MyTransparentTextLabel sevicesTextLabel= new MyTransparentTextLabel("Pakalpojumi", 135, 60, 250, 50);
+    MyTransparentTextLabel servicesTextLabel = new MyTransparentTextLabel("Pakalpojumi", 135, 60, 250, 50);
     MyTransparentTextLabel previousOrdersTextLabel= new MyTransparentTextLabel("Iepriekšējie pasūtījumi", 90, 60, 250, 50);
     MyTransparentTextLabel leftSideTextLabel= new MyTransparentTextLabel("Dokumentu glabāšana", 30, 20, 240, 100);
     MyTransparentTextLabel middleSideTextLabel= new MyTransparentTextLabel("Smalcināšana / iznīcināšana", 10, 20, 240, 100);
     MyTransparentTextLabel rightSideTextLabel= new MyTransparentTextLabel("Arhīva sakārtošana", 40, 20, 240, 100);
 
-    OrderePageSelectItem() {
+    OrderPageSelectItem() {
 
         sideLabel2.add(previousOrdersTextLabel);
-        sideLabel1.add(sevicesTextLabel);
+        sideLabel1.add(servicesTextLabel);
         leftSideLabel.add(leftSideTextLabel);
         middleSideLabel.add(middleSideTextLabel);
         rightSideLabel.add(rightSideTextLabel);
@@ -449,7 +466,7 @@ class OrderePageSelectItem implements ActionListener, MouseListener {
         orderPageFrame.add(sideLabel1);
         orderPageFrame.setLayout(null);
         orderPageFrame.setVisible(true);
-    } //End OrderePageSelectItem()
+    } //End OrderPageSelectItem()
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -457,33 +474,30 @@ class OrderePageSelectItem implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        MyTransparentLabel[] labels= new MyTransparentLabel[] {leftSideLabel, middleSideLabel, rightSideLabel};
-        for (int i = 0; i < labels.length; i++) {
-            if(e.getSource().equals(labels[0])) {
+            if(e.getSource().equals(leftSideLabel)) {
                 orderPageFrame.dispose();
                 new OrderPage_StoreDocuments();
             }
-            if(e.getSource().equals(labels[1])) {
+            if(e.getSource().equals(middleSideLabel)) {
                 orderPageFrame.dispose();
                 new OrderPage_ShreddingDocuments();
             }
-            if(e.getSource().equals(labels[2])) {
+            if(e.getSource().equals(rightSideLabel)) {
                 orderPageFrame.dispose();
                 new OrderPage_ArchiveDocuments();
             }
-        }
         MyTransparentLabel[] labels2= new MyTransparentLabel[] {sideLabel1, sideLabel2};
         for (int i = 0; i < labels2.length; i++) {
-            if(e.getSource().equals(labels2[0])) {
+            if(e.getSource().equals(sideLabel1)) {
                 labels2[i].setVisible(false);
                 leftSideLabel.setVisible(true);
                 middleSideLabel.setVisible(true);
                 rightSideLabel.setVisible(true);
             }
-            if(e.getSource().equals(labels2[1])) {
-                orderPageFrame.dispose();
-                new PreviousOrders();
-            }
+        }
+        if(e.getSource().equals(sideLabel2)) {
+            orderPageFrame.dispose();
+            new PreviousOrders();
         }
     }
 
@@ -528,9 +542,10 @@ class OrderePageSelectItem implements ActionListener, MouseListener {
             }
         }
     }
-} //End OrderePageSelectItem class
+} //End OrderPageSelectItem class
 
-class OrderPage_StoreDocuments implements ActionListener, MouseListener {
+class OrderPage_StoreDocuments extends Component implements ActionListener, MouseListener {
+    public int userID;
     MyFrame storeDocumentsFrame= new MyFrame("Document Solutions Store Documents Page");
     MyTransparentLabel label_1 = new MyTransparentLabel(65, 100, 240, 240);
     MyTransparentLabel label_2 = new MyTransparentLabel(330, 100, 240, 240);
@@ -539,15 +554,15 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
     MyTransparentLabel label_5 = new MyTransparentLabel(330, 365, 240, 240);
     MyTransparentLabel label_6 = new MyTransparentLabel(600, 365, 240, 240);
 
-// componentes #1
+// components #1
     MyTransparentTextLabel rightSLabel1Text= new MyTransparentTextLabel("Adrese", 90, 0, 240, 50);
-    MyTextArea boxTextArea= new MyTextArea(20, 40, 200, 160);
+    MyTextArea addressTextArea = new MyTextArea(20, 40, 200, 160);
 
-// componentes #2
+// components #2
     MyTransparentTextLabel leftSLabel2Text= new MyTransparentTextLabel("Darba laiks", 60, 0, 240, 50);
     MyTextField workingTimeTextF= new MyTextField(40, 70, 160, 40);
 
-// componentes #3
+// components #3
     MyTransparentLabel helpLabel1= new MyTransparentLabel(40, 40, 160, 70);
     MyTransparentTextLabel leftSLabel1Text= new MyTransparentTextLabel("Daudzums kastēs *", 40, 0, 240, 50);
     MyLabel helpTextLabel1= new MyLabel("VADOTIES PĒC TĀ, KA", 5, 10, 160, 15, 12);
@@ -556,33 +571,34 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
     MyTextField boxTextF= new MyTextField(40, 160, 100, 40);
     MyTransparentTextLabel boxSideText= new MyTransparentTextLabel("(- kastes)", 150, 160, 100, 40);
 
-// componentes #4
+// components #4
     MyTransparentTextLabel middleSLabel2Text= new MyTransparentTextLabel("Piezīmes", 70, 0, 240, 50);
-    MyTextArea boxTextArea2= new MyTextArea(20, 40, 200, 160);
+    MyTextArea notesTextArea= new MyTextArea(20, 40, 200, 160);
 
-// componentes #5
+// components #5
     MyTransparentTextLabel middleSLabel1Text= new MyTransparentTextLabel("Stāvs / Pagrabs", 60, 120, 240, 50);
     MyTransparentTextLabel middleSLabel1Text2= new MyTransparentTextLabel("Lifts", 100, 0, 240, 50);
     MyButton yesBtn= new MyButton("IR", 20, 40, 90, 50);
     MyButton noBtn= new MyButton("NAV", 130, 40, 90, 50);
-    MyTextField boxTextF2= new MyTextField(40, 160, 100, 40);
+    int elevatorIs= 0; // apzīmē vai ir lifts(0- nav lifta, 1- ir lifts)
+    MyTextField floorTextF = new MyTextField(40, 160, 100, 40);
     MyTransparentTextLabel boxSideText2= new MyTransparentTextLabel("(- stāvi)", 150, 160, 100, 40);
 
-// componentes #6
+// components #6
     MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
     OrderPage_StoreDocuments() {
-// componentes ################################################### #1
-        boxTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
-        boxTextArea.setForeground(Color.GRAY);
-        boxTextArea.setEditable(false);
+// components ################################################### #1
+        addressTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
+        addressTextArea.setForeground(Color.GRAY);
+        addressTextArea.setEditable(false);
 
-        boxTextArea.addMouseListener(this);
+        addressTextArea.addMouseListener(this);
 
-        label_1.add(boxTextArea);
+        label_1.add(addressTextArea);
         label_1.add(rightSLabel1Text);
 // ############################################################### #1
 
-// componentes ################################################### #2
+// components ################################################### #2
         workingTimeTextF.setText("09:00 - 17:00");
         workingTimeTextF.setEditable(false);
         workingTimeTextF.setForeground(Color.GRAY);
@@ -592,12 +608,12 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
         label_2.add(leftSLabel2Text);
 // ############################################################### #2
 
-// componentes #######§########################################### #3
+// components #######§########################################### #3
 // Change color of helpText
         helpTextLabel1.setForeground(Color.BLACK);
         helpTextLabel2.setForeground(Color.BLACK);
         helpTextLabel3.setForeground(Color.BLACK);
-// leftSLabel1Text add Mouse Listiner
+// leftSLabel1Text add Mouse Listener
         leftSLabel1Text.addMouseListener(this);
 // helpLabel1 setUp
         helpLabel1.setBackground(new Color(173, 224, 203));
@@ -612,19 +628,19 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
         label_3.add(helpLabel1);
 // ############################################################### #3
 
-// componentes ################################################### #4
-        label_4.add(boxTextArea2);
+// components ################################################### #4
+        label_4.add(notesTextArea);
         label_4.add(middleSLabel2Text);
 // ############################################################### #4
 
-// componentes ################################################### #5
-        boxTextF2.setVisible(false);
+// components ################################################### #5
+        floorTextF.setVisible(false);
         boxSideText2.setVisible(false);
 
         yesBtn.addActionListener(this);
         noBtn.addActionListener(this);
 
-        label_5.add(boxTextF2);
+        label_5.add(floorTextF);
         label_5.add(boxSideText2);
         label_5.add(noBtn);
         label_5.add(yesBtn);
@@ -632,7 +648,7 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
         label_5.add(middleSLabel1Text2);
 // ############################################################### #5
 
-// componentes ################################################### #6
+// components ################################################### #6
         nextBtn.addActionListener(this);
 
         label_6.add(nextBtn);
@@ -649,29 +665,32 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(nextBtn)) {
             // šeit ir nepieciešams kods, kas aptver visu ievadīto info un nogādā tālāk
-            storeDocumentsFrame.dispose();
-            new PreviousOrders();
+            registerOrderP();
+            //storeDocumentsFrame.dispose();
+            //new PreviousOrders();
         }
         if(e.getSource().equals(yesBtn)) {
+            elevatorIs= 1;
             yesBtn.setBackground(new Color(141, 210, 93));
             noBtn.setBackground(new Color(184, 229, 154));
-            boxTextF2.setVisible(false);
+            floorTextF.setVisible(false);
             boxSideText2.setVisible(false);
         }
         if(e.getSource().equals(noBtn)) {
+            elevatorIs= 0;
             yesBtn.setBackground(new Color(184, 229, 154));
             noBtn.setBackground(new Color(141, 210, 93));
-            boxTextF2.setVisible(true);
+            floorTextF.setVisible(true);
             boxSideText2.setVisible(true);
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getSource().equals(boxTextArea)) {
-            boxTextArea.setText("");
-            boxTextArea.setForeground(Color.BLACK);
-            boxTextArea.setEditable(true);
+        if(e.getSource().equals(addressTextArea)) {
+            addressTextArea.setText("");
+            addressTextArea.setForeground(Color.BLACK);
+            addressTextArea.setEditable(true);
         }
         if(e.getSource().equals(workingTimeTextF)) {
             workingTimeTextF.setText("");
@@ -703,6 +722,77 @@ class OrderPage_StoreDocuments implements ActionListener, MouseListener {
             helpLabel1.setVisible(false);
         }
     }
+
+    OrderS orderS;
+
+    private void registerOrderP() {
+        String address= addressTextArea.getText();
+        String notes= notesTextArea.getText();
+        String time= workingTimeTextF.getText();
+        String boxes= boxTextF.getText();
+        String elevator= String.valueOf(elevatorIs);
+        String floor= floorTextF.getText();
+
+        if(address.isEmpty() || boxes.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Adresei un Kastu skaitam jābūt aizpildītiem", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        // zemāk var izveidot validācijas piem. adresē jābūt skaidram LV-0000
+        orderS = addOrderSToDatabase(address, notes, time, boxes, elevator, floor);
+        System.out.println("Visi orderi: "+orderS); // šis rādās kā null....
+        if(orderS != null) {
+            storeDocumentsFrame.dispose();
+            new PreviousOrders();
+        }
+        else {
+            System.out.println(orderS);
+            System.out.println(address+" "+notes+" "+time+" "+boxes+" "+elevator+" "+floor);
+            JOptionPane.showMessageDialog(this, "Neizdevās izveidot pasūtījumu", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private OrderS addOrderSToDatabase(String address, String notes, String time, String boxes, String elevator, String floor) {
+        OrderS orderS= null;
+        final String DB_URL= "jdbc:mysql://localhost:3306/JAVA_IT"; //jānorāda datubāzes lokācija, kas jau iepriekš ir izveidota
+        final String USERNAME= "root"; // šis ir noklusējuma username
+        final String PASSWORD= "e6127609-"; // šī ir izveidotā parole iekš MySQL
+
+        try{
+            Connection connection= DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            Statement statement = connection.createStatement();
+            String sql= "INSERT INTO orders (address, notes, time, boxes, elevator, floor) "+ "VALUES (?, ?, ?, ?, ?, ?) ";
+            PreparedStatement preparedStatement= connection.prepareStatement(sql);
+            preparedStatement.setString(1, address);
+            preparedStatement.setString(2, notes);
+            preparedStatement.setString(3, time);
+            preparedStatement.setString(4, boxes);
+            preparedStatement.setString(5, elevator);
+            preparedStatement.setString(6, floor);
+//līdz šim strādā
+            int addedRows= preparedStatement.executeUpdate();
+            if (addedRows > 0) {
+                System.out.println("Rows added strādā");
+                orderS= new OrderS();
+                orderS.address= address;
+                orderS.notes= notes;
+                orderS.time= time;
+                orderS.boxes= boxes;
+                orderS.elevator= elevator;
+                orderS.floor= floor;
+            }
+            statement.close();
+            connection.close();
+        } catch (SQLException s) {
+            if(s.getErrorCode() == 1062) {
+                JOptionPane.showMessageDialog(this, "Šāds pasūtījums jau eksitē!", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderS;
+    }
+
 } //End class OrderPage_StoreDocuments
 
 class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
@@ -715,25 +805,25 @@ class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
     MyTransparentLabel label_5 = new MyTransparentLabel(330, 365, 240, 240);
     MyTransparentLabel label_6 = new MyTransparentLabel(600, 365, 240, 240);
 
-// componentes #1
+// components #1
     MyTransparentTextLabel rightSLabel1Text= new MyTransparentTextLabel("Adrese", 90, 0, 240, 50);
     MyTextArea boxTextArea= new MyTextArea(20, 40, 200, 160);
 
-// componentes #2
+// components #2
     MyTransparentTextLabel needTransportText= new MyTransparentTextLabel("Nepieciešama aizvešana?", 20, 0, 240, 50);
     MyButton yesBtn1= new MyButton("JĀ!", 20, 40, 90, 50);
     MyButton noBtn1= new MyButton("NĒ!", 130, 40, 90, 50);
 
-// componentes #3
+// components #3
     MyTransparentTextLabel leftSLabel1Text= new MyTransparentTextLabel("Aptuvenais svars", 40, 0, 240, 50);
     MyTextField boxTextF= new MyTextField(40, 160, 100, 40);
     MyTransparentTextLabel boxSideText= new MyTransparentTextLabel("KG", 150, 160, 100, 40);
 
-// componentes #4
+// components #4
     MyTransparentTextLabel middleSLabel2Text= new MyTransparentTextLabel("Piezīmes", 70, 0, 240, 50);
     MyTextArea boxTextArea2= new MyTextArea(20, 40, 200, 160);
 
-// componentes #5
+// components #5
     MyTransparentTextLabel middleSLabel1Text= new MyTransparentTextLabel("Stāvs / Pagrabs", 60, 120, 240, 50);
     MyTransparentTextLabel middleSLabel1Text2= new MyTransparentTextLabel("Lifts", 100, 0, 240, 50);
     MyButton yesBtn= new MyButton("IR", 20, 40, 90, 50);
@@ -741,12 +831,12 @@ class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
     MyTextField boxTextF2= new MyTextField(40, 160, 100, 40);
     MyTransparentTextLabel boxSideText2= new MyTransparentTextLabel("(- stāvi)", 150, 160, 100, 40);
 
-// componentes #6
+// components #6
     MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
 
 
     OrderPage_ShreddingDocuments() {
-// componentes ################################################### #1
+// components ################################################### #1
         boxTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
         boxTextArea.setForeground(Color.GRAY);
         boxTextArea.setEditable(false);
@@ -757,7 +847,7 @@ class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
         label_1.add(rightSLabel1Text);
 // ############################################################### #1
 
-// componentes ################################################### #2
+// components ################################################### #2
         yesBtn1.addActionListener(this);
         noBtn1.addActionListener(this);
 
@@ -766,8 +856,8 @@ class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
         label_2.add(needTransportText);
 // ############################################################### #2
 
-// componentes ################################################### #3
-// leftSLabel1Text add Mouse Listiner
+// components ################################################### #3
+// leftSLabel1Text add Mouse Listener
         leftSLabel1Text.addMouseListener(this);
 // leftSideLabel1 setUp
         label_3.add(boxSideText);
@@ -775,12 +865,12 @@ class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
         label_3.add(leftSLabel1Text);
 // ############################################################### #3
 
-// componentes ################################################### #4
+// components ################################################### #4
         label_4.add(boxTextArea2);
         label_4.add(middleSLabel2Text);
 // ############################################################### #4
 
-// componentes ################################################### #5
+// components ################################################### #5
         label_5.setVisible(false);
         boxTextF2.setVisible(false);
         boxSideText2.setVisible(false);
@@ -796,7 +886,7 @@ class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
         label_5.add(middleSLabel1Text2);
 // ############################################################### #5
 
-// componentes ################################################### #6
+// components ################################################### #6
         nextBtn.addActionListener(this);
 
         label_6.add(nextBtn);
@@ -878,28 +968,28 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
     MyTransparentLabel label_5 = new MyTransparentLabel(330, 365, 240, 240);
     MyTransparentLabel label_6 = new MyTransparentLabel(600, 365, 240, 240);
 
-// componentes #1
+// components #1
     MyTransparentTextLabel rightSLabel1Text= new MyTransparentTextLabel("Adrese", 90, 0, 240, 50);
     MyTextArea boxTextArea= new MyTextArea(20, 40, 200, 160);
 
-// componentes #2
+// components #2
     MyTransparentTextLabel leftSLabel2Text= new MyTransparentTextLabel("Darba laiks", 60, 0, 240, 50);
     MyTextField workingTimeTextF= new MyTextField(40, 70, 160, 40);
 
-// componentes #3
+// components #3
     MyTransparentTextLabel middleSLabel1Text2= new MyTransparentTextLabel("Telpas izmēri", 50, 0, 240, 50);
     MyTextField boxTextF2= new MyTextField(40, 160, 100, 40);
     MyTransparentTextLabel boxSideText2= new MyTransparentTextLabel("(- m2)", 150, 160, 100, 40);
 
-// componentes #4
+// components #4
     MyTransparentTextLabel middleSLabel2Text= new MyTransparentTextLabel("Piezīmes", 70, 0, 240, 50);
     MyTextArea boxTextArea2= new MyTextArea(20, 40, 200, 160);
 
-// componentes #6
+// components #6
     MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
     OrderPage_ArchiveDocuments() {
 
-// componentes ################################################### #1
+// components ################################################### #1
         boxTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
         boxTextArea.setForeground(Color.GRAY);
         boxTextArea.setEditable(false);
@@ -910,7 +1000,7 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
         label_1.add(rightSLabel1Text);
 // ############################################################### #1
 
-// componentes ################################################### #2
+// components ################################################### #2
         workingTimeTextF.setText("09:00 - 17:00");
         workingTimeTextF.setEditable(false);
         workingTimeTextF.setForeground(Color.GRAY);
@@ -920,18 +1010,18 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
         label_2.add(leftSLabel2Text);
 // ############################################################### #2
 
-// componentes ################################################### #5
+// components ################################################### #5
         label_3.add(boxTextF2);
         label_3.add(boxSideText2);
         label_3.add(middleSLabel1Text2);
 // ############################################################### #5
 
-// componentes ################################################### #4
+// components ################################################### #4
         label_4.add(boxTextArea2);
         label_4.add(middleSLabel2Text);
 // ############################################################### #4
 
-// componentes ################################################### #6
+// components ################################################### #6
         nextBtn.addActionListener(this);
 
         label_6.add(nextBtn);
@@ -1026,10 +1116,9 @@ class AdministratorPage implements ActionListener {
     MyTransparentLabel mainLabel= new MyTransparentLabel(65, 100, 770, 500);
     //MyComboBox comboBox= new MyComboBox(clients, 50, 50, 150, 50);
 
-    JComboBox comboBox;
+    JComboBox comboBox= new JComboBox(clients);
     AdministratorPage() {
 
-        comboBox= new JComboBox(clients);
         comboBox.addActionListener(this);
         comboBox.setEditable(true);
         comboBox.setBounds(50, 50, 150, 50);
@@ -1044,10 +1133,6 @@ class AdministratorPage implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()== comboBox) {
-            String ievade = (String) comboBox.getSelectedItem(); // var salīdzināt pēc nosaukuma
-            int indexSelected = comboBox.getSelectedIndex(); // var salīdzināt pēc indexa
-            System.out.println("Lietotāja ievade: " + comboBox.getSelectedItem());
-        }
+
     }
 }

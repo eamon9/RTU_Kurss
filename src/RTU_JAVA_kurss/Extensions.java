@@ -2,50 +2,16 @@ package RTU_JAVA_kurss;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 class MyFrame extends JFrame {
-    //MyPanel panel;
     MyFrame(String title) {
-        //panel= new MyPanel();
-        //panel.setVisible(true);
         this.setTitle(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // piešķir funkciju pogai 'X'- šajā gadījumā- AIZVĒRT LOGU
         this.setResizable(false); // nevar mainīt izmēru rāmim
         this.setSize(new Dimension(900, 700)); // piešķir konkrētu izmēru rāmim x un y dimensijā
         this.setLocationRelativeTo(null); // rāmis būs pa vidu ekrānam
         this.getContentPane().setBackground(new Color(173, 224, 203)); // nomaina fona krāsu //49, 48, 148 Part1
-        //this.add(panel);
     }
-}
-
-class MyPanel extends JPanel {
-    Image img;
-
-    MyPanel() {
-        //img = new ImageIcon("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/IMAGES/logo_apple.png").getImage();
-        this.setPreferredSize(new Dimension(400, 400));
-        this.setBounds(0, 0, 400, 400);
-        //this.setBackground(new Color(6, 51, 229));
-        this.setVisible(true);
-
-    }
-    /*public void paint(Graphics g) {
-        Graphics2D g2D = (Graphics2D) g;
-
-        //g2D.setStroke(new BasicStroke(25));
-
-        GradientPaint gPaint= new GradientPaint(50, 50, new Color(173, 224, 203), 300, 100, new Color(143, 210, 205));
-        g2D.setPaint(gPaint);
-        //g2D.drawString("U R A WINNER! =D",50, 50);
-        g2D.fill(new Rectangle2D.Double(50, 50, 300, 100));
-
-
-        //g2D.drawImage(img, 0, 0, null);
-        *//*g2D.drawLine(60, 60, 120, 120);
-        g2D.drawLine(160, 160, 300, 300);*//*
-
-    }*/
 }
 
 class MyLabel extends JLabel {
@@ -140,11 +106,11 @@ class MyPasswordField extends JPasswordField {
     }
 }
 
-class MyComboBox extends JComboBox {
+/*class MyComboBox extends JComboBox {
     MyComboBox(String[] list, int x, int y, int width, int height) {
         this.setEditable(true);
         this.setBounds(x, y, width, height);
         this.setFont(new Font("Times New Roman", Font.PLAIN, 20));
     }
-}
+}*/
 
