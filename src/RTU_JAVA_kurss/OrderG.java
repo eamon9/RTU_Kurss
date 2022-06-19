@@ -8,6 +8,7 @@ public class OrderG {
     public String boxes;
     public String elevator;
     public String floor;
+    public String currentTime;
     public String userID;
 
 }
