@@ -4,8 +4,8 @@ public class Main {
     public int userID;
     public static void main(String[] args) {
 
-        //new MainPage();
-        new LoginPage();
+        new MainPage();
+        //new LoginPage();
         //new RegistrationPage();
 
         //new OrderPageSelectItem();

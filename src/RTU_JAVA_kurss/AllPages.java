@@ -6,8 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.sql.*;
-import java.util.Arrays;
+import java.util.Scanner;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
@@ -46,7 +51,7 @@ class MainPage implements ActionListener {
 } //End MainPage class
 
 class LoginPage extends Component implements ActionListener, MouseListener {
-
+    String uName, uSurname, uEmail, uMobile;
     MyFrame loginPageFrame= new MyFrame("Document Solutions Login Page");
     MyTransparentTextLabel registeredUserLabel= new MyTransparentTextLabel("Esmu reģistrēts lietotājs", 85, 60, 250, 50);
     MyTransparentTextLabel notRegisteredUserLabel= new MyTransparentTextLabel("Jums nav lietotāja profila?", 75, 60, 250, 50);
@@ -97,7 +102,18 @@ class LoginPage extends Component implements ActionListener, MouseListener {
             user = getAuthenticUser(mail, password);
 
             if(user != null) {
-                System.out.println("Sveiks!"+user.name+"Jūsu e-pasts: "+user.mail+"Tel. nr.: "+user.mobile);
+                String sourceFolder= "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
+                String[] userDetails= new String[]{uName, uSurname, uEmail, uMobile};
+                System.out.println("Sveiks "+user.name+"! Jūsu e-pasts: "+user.mail+" Tel. nr.: "+user.mobile);
+                writeTextToFile(sourceFolder+"users_ID.txt", user.UserID);
+                writeTextToFile(sourceFolder+"uEmail.txt", user.mail);
+                writeTextToFile(sourceFolder+"uSurname.txt", user.surname);
+                writeTextToFile(sourceFolder+"uName.txt", user.name);
+                writeTextToFile(sourceFolder+"uMobile.txt", user.mobile);
+                /*for (int i = 0; i < userDetails.length; i++) {
+                    userDetails[i]= getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/"+userDetails[i]+".txt");
+                }*/
+
                 loginPageFrame.dispose();
                 new OrderPageSelectItem();
             }
@@ -118,6 +134,7 @@ class LoginPage extends Component implements ActionListener, MouseListener {
             loginPageFrame.dispose();
             new RegistrationPage();
         }
+
     } //End actionPerformed()
 
     @Override
@@ -166,7 +183,6 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 
     }
 
-    public int userID;
     public User user;
     private User getAuthenticUser(String mail, String password) {
         User user= null;
@@ -182,16 +198,12 @@ class LoginPage extends Component implements ActionListener, MouseListener {
             PreparedStatement preparedStatement= connection.prepareStatement(sql);
             preparedStatement.setString(1, mail);
             preparedStatement.setString(2, password);
-            System.out.println(mail);
-
-            String sql1= "SELECT * FROM users WHERE UserID=?";
-            PreparedStatement preparedStatement2= connection.prepareStatement(sql1);
-            //userID= UserID;
 
             ResultSet resultSet= preparedStatement.executeQuery();
 
             if(resultSet.next()) {
                 user = new User();
+                user.UserID= resultSet.getString("UserID");
                 user.name= resultSet.getString("name");
                 user.surname= resultSet.getString("surname");
                 user.mail= resultSet.getString("mail");
@@ -204,6 +216,30 @@ class LoginPage extends Component implements ActionListener, MouseListener {
         }
 
         return user;
+    }
+    public void writeTextToFile(String address, String data) {
+        File file= new File(address);
+        try{
+            FileWriter fileWriter= new FileWriter(file.getPath());
+            fileWriter.write(data);
+            fileWriter.close();
+        } catch (Exception f) {
+            System.out.println("Kautkas nogāja greizi.. "+ f);
+        }
+    }
+    public String getTextFromFile(String textPath) {
+        String textFromFile= "";
+        Scanner sc;
+        {
+            try {
+                sc = new Scanner(Path.of(textPath), StandardCharsets.UTF_8);
+                sc.useDelimiter("$^");
+                textFromFile = sc.next(); sc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return textFromFile;
     }
 } //End LoginPage class
 
@@ -353,7 +389,6 @@ class RegistrationPage extends Component implements ActionListener {
     } //End actionPerformed()
 
     User user;
-
     private void registerUser() {
         String name= nameTF.getText();
         String surname= surnameTF.getText();
@@ -398,7 +433,7 @@ class RegistrationPage extends Component implements ActionListener {
             Connection connection= DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 
             Statement statement = connection.createStatement();
-            String sql= "INSERT INTO users (name, surname, mail, password, mobile) "+ "VALUES (?, ?, ?, ?, ?) ";
+            String sql= "INSERT INTO users (UserID, name, surname, mail, password, mobile) "+ "VALUES (?, ?, ?, ?, ?, ?) ";
             PreparedStatement preparedStatement= connection.prepareStatement(sql);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
@@ -445,7 +480,6 @@ class OrderPageSelectItem implements ActionListener, MouseListener {
     MyTransparentTextLabel rightSideTextLabel= new MyTransparentTextLabel("Arhīva sakārtošana", 40, 20, 240, 100);
 
     OrderPageSelectItem() {
-
         sideLabel2.add(previousOrdersTextLabel);
         sideLabel1.add(servicesTextLabel);
         leftSideLabel.add(leftSideTextLabel);
@@ -545,7 +579,7 @@ class OrderPageSelectItem implements ActionListener, MouseListener {
 } //End OrderPageSelectItem class
 
 class OrderPage_StoreDocuments extends Component implements ActionListener, MouseListener {
-    public int userID;
+    public String user_ID= getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
     MyFrame storeDocumentsFrame= new MyFrame("Document Solutions Store Documents Page");
     MyTransparentLabel label_1 = new MyTransparentLabel(65, 100, 240, 240);
     MyTransparentLabel label_2 = new MyTransparentLabel(330, 100, 240, 240);
@@ -587,6 +621,7 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
 // components #6
     MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
     OrderPage_StoreDocuments() {
+        System.out.println("UserIDs: ID"+ user_ID+"#001S");
 // components ################################################### #1
         addressTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
         addressTextArea.setForeground(Color.GRAY);
@@ -723,7 +758,7 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
         }
     }
 
-    OrderS orderS;
+    OrderG orderG;
 
     private void registerOrderP() {
         String address= addressTextArea.getText();
@@ -732,27 +767,28 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
         String boxes= boxTextF.getText();
         String elevator= String.valueOf(elevatorIs);
         String floor= floorTextF.getText();
+        String userID= user_ID;
 
         if(address.isEmpty() || boxes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Adresei un Kastu skaitam jābūt aizpildītiem", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
             return;
         }
         // zemāk var izveidot validācijas piem. adresē jābūt skaidram LV-0000
-        orderS = addOrderSToDatabase(address, notes, time, boxes, elevator, floor);
-        System.out.println("Visi orderi: "+orderS); // šis rādās kā null....
-        if(orderS != null) {
+        orderG = addOrderSToDatabase(address, notes, time, boxes, elevator, floor, userID);
+        System.out.println("Visi orderi: "+ orderG); // šis rādās kā null....
+        if(orderG != null) {
             storeDocumentsFrame.dispose();
             new PreviousOrders();
         }
         else {
-            System.out.println(orderS);
-            System.out.println(address+" "+notes+" "+time+" "+boxes+" "+elevator+" "+floor);
+            System.out.println(orderG);
+            System.out.println(address+" "+notes+" "+time+" "+boxes+" "+elevator+" "+floor+" "+userID);
             JOptionPane.showMessageDialog(this, "Neizdevās izveidot pasūtījumu", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private OrderS addOrderSToDatabase(String address, String notes, String time, String boxes, String elevator, String floor) {
-        OrderS orderS= null;
+    private OrderG addOrderSToDatabase(String address, String notes, String time, String boxes, String elevator, String floor, String userID) {
+        OrderG orderG = null;
         final String DB_URL= "jdbc:mysql://localhost:3306/JAVA_IT"; //jānorāda datubāzes lokācija, kas jau iepriekš ir izveidota
         final String USERNAME= "root"; // šis ir noklusējuma username
         final String PASSWORD= "e6127609-"; // šī ir izveidotā parole iekš MySQL
@@ -761,7 +797,7 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
             Connection connection= DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 
             Statement statement = connection.createStatement();
-            String sql= "INSERT INTO orders (address, notes, time, boxes, elevator, floor) "+ "VALUES (?, ?, ?, ?, ?, ?) ";
+            String sql= "INSERT INTO orders (address, notes, time, boxes, elevator.txt, floor, userID) "+ "VALUES (?, ?, ?, ?, ?, ?, ?) ";
             PreparedStatement preparedStatement= connection.prepareStatement(sql);
             preparedStatement.setString(1, address);
             preparedStatement.setString(2, notes);
@@ -769,17 +805,19 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
             preparedStatement.setString(4, boxes);
             preparedStatement.setString(5, elevator);
             preparedStatement.setString(6, floor);
+            preparedStatement.setString(7, userID);
 //līdz šim strādā
             int addedRows= preparedStatement.executeUpdate();
             if (addedRows > 0) {
                 System.out.println("Rows added strādā");
-                orderS= new OrderS();
-                orderS.address= address;
-                orderS.notes= notes;
-                orderS.time= time;
-                orderS.boxes= boxes;
-                orderS.elevator= elevator;
-                orderS.floor= floor;
+                orderG = new OrderG();
+                orderG.address= address;
+                orderG.notes= notes;
+                orderG.time= time;
+                orderG.boxes= boxes;
+                orderG.elevator= elevator;
+                orderG.floor= floor;
+                orderG.userID= userID;
             }
             statement.close();
             connection.close();
@@ -790,7 +828,21 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return orderS;
+        return orderG;
+    }
+    public String getTextFromFile(String textPath) {
+        String textFromFile= "";
+        Scanner sc;
+        {
+            try {
+                sc = new Scanner(Path.of(textPath), StandardCharsets.UTF_8);
+                sc.useDelimiter("$^");
+                textFromFile = sc.next(); sc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return textFromFile;
     }
 
 } //End class OrderPage_StoreDocuments
@@ -1072,8 +1124,26 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
 
 class PreviousOrders implements ActionListener, MouseListener {
     MyFrame previousOrdersFrame= new MyFrame("Document Solutions Previous Orders Page");
+    MyLabel topTextLabel= new MyLabel("23.06.2022 (Glabāšana)", 300, 10, 400, 30, 30);
+    MyLabel addressTextLabel= new MyLabel("Adrese: "+"Rīga, Jasmuižas iela 3, 3, LV-1004", 200, 60, 500, 20, 18);
+    MyLabel timeTextLabel= new MyLabel("Darba laiks: "+"09:00- 19:30", 200, 90, 500, 20, 18);
+    MyLabel boxesTextLabel= new MyLabel("Kastes: "+"400"+" GB", 200, 120, 500, 20, 18);
+    MyLabel lvlTextLabel= new MyLabel("Stāvs: "+"0", 200, 150, 500, 20, 18);
+    MyLabel notesTextLabel= new MyLabel("Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 200, 180, 500, 20, 18);
+    MyLabel statussTextLabel= new MyLabel("Statuss : "+"GAIDA", 200, 210, 500, 20, 18);
+    MyLabel totalTextLabel= new MyLabel("Kopā: "+"235,0 Eiro + PVN 21%", 200, 240, 500, 30, 30);
+    MyLabel monthTextLabel= new MyLabel("*Mēneša maksa: "+"90,0 Eiro + PVN 21%", 200, 280, 500, 20, 18);
     PreviousOrders() {
 
+        previousOrdersFrame.add(monthTextLabel);
+        previousOrdersFrame.add(totalTextLabel);
+        previousOrdersFrame.add(statussTextLabel);
+        previousOrdersFrame.add(notesTextLabel);
+        previousOrdersFrame.add(lvlTextLabel);
+        previousOrdersFrame.add(boxesTextLabel);
+        previousOrdersFrame.add(timeTextLabel);
+        previousOrdersFrame.add(addressTextLabel);
+        previousOrdersFrame.add(topTextLabel);
         previousOrdersFrame.setLayout(null);
         previousOrdersFrame.setVisible(true);
     } //End PreviousOrders()

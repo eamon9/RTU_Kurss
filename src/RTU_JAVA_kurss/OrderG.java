@@ -1,6 +1,6 @@
 package RTU_JAVA_kurss;
 
-public class OrderS {
+public class OrderG {
 
     public String address;
     public String notes;
@@ -8,6 +8,6 @@ public class OrderS {
     public String boxes;
     public String elevator;
     public String floor;
-    //public String userID;
+    public String userID;
 
 }
