@@ -53,7 +53,7 @@ class MainPage implements ActionListener {
 } //End MainPage class
 
 class LoginPage extends Component implements ActionListener, MouseListener {
-    String uName, uSurname, uEmail, uMobile;
+    WriteTextToFile wttf= new WriteTextToFile();
     MyFrame loginPageFrame= new MyFrame("Document Solutions Login Page");
     MyTransparentTextLabel registeredUserLabel= new MyTransparentTextLabel("Esmu reģistrēts lietotājs", 85, 60, 250, 50);
     MyTransparentTextLabel notRegisteredUserLabel= new MyTransparentTextLabel("Jums nav lietotāja profila?", 75, 60, 250, 50);
@@ -105,16 +105,14 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 
             if(user != null) {
                 String sourceFolder= "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
-                String[] userDetails= new String[]{uName, uSurname, uEmail, uMobile};
                 System.out.println("Sveiks "+user.name+"! Jūsu e-pasts: "+user.mail+" Tel. nr.: "+user.mobile);
-                writeTextToFile(sourceFolder+"users_ID.txt", user.UserID);
-                writeTextToFile(sourceFolder+"uEmail.txt", user.mail);
-                writeTextToFile(sourceFolder+"uSurname.txt", user.surname);
-                writeTextToFile(sourceFolder+"uName.txt", user.name);
-                writeTextToFile(sourceFolder+"uMobile.txt", user.mobile);
-                /*for (int i = 0; i < userDetails.length; i++) {
-                    userDetails[i]= getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/"+userDetails[i]+".txt");
-                }*/
+                wttf.writeTextToFile(sourceFolder+"users_ID.txt", user.UserID);
+                //writeTextToFile(sourceFolder+"uEmail.txt", user.mail);
+                //writeTextToFile(sourceFolder+"uSurname.txt", user.surname);
+                //writeTextToFile(sourceFolder+"uName.txt", user.name);
+                //writeTextToFile(sourceFolder+"uMobile.txt", user.mobile);
+                GetUserInfo getUserInfo= new GetUserInfo();
+                System.out.println(getUserInfo.getUsersInfo(user.UserID, "name"));
 
                 loginPageFrame.dispose();
                 new OrderPageSelectItem();
@@ -220,32 +218,6 @@ class LoginPage extends Component implements ActionListener, MouseListener {
         return user;
     }
 
-    public void writeTextToFile(String address, String data) {
-        File file= new File(address);
-        try{
-            FileWriter fileWriter= new FileWriter(file.getPath());
-            fileWriter.write(data);
-            fileWriter.close();
-        } catch (Exception f) {
-            System.out.println("Kautkas nogāja greizi.. "+ f);
-        }
-    }
-
-    public String getTextFromFile(String textPath) {
-        String textFromFile= "";
-        Scanner sc;
-        {
-            try {
-                sc = new Scanner(Path.of(textPath), StandardCharsets.UTF_8);
-                sc.useDelimiter("$^");
-                textFromFile = sc.next(); sc.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return textFromFile;
-    }
-
 } //End LoginPage class
 
 class RegistrationPage extends Component implements ActionListener {
@@ -296,7 +268,6 @@ class RegistrationPage extends Component implements ActionListener {
         personGroup.add(individualRadioBtn);
         personGroup.add(juridicalRadioBtn);
 // visi 'label' priekš juridiskās daļas, kam noklusējumā jābūt slēptiem
-        MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
         for (int i = 0; i < labelsForJuridical.length; i++) {
             labelsForJuridical[i].setVisible(false);
             mainLabel.add(labelsForJuridical[i]);
@@ -307,7 +278,6 @@ class RegistrationPage extends Component implements ActionListener {
             mainLabel.add(labelsForIndividual[i]);
         }
 // visi 'TextField' priekš juridiskās daļas, kam noklusējumā jābūt slēptiem un tiek pievienoti mainLabel klasei ar .add() Metodi
-        MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
         for (int i = 0; i < juridicalTF.length; i++) {
             juridicalTF[i].setVisible(false);
             mainLabel.add(juridicalTF[i]);
@@ -352,7 +322,6 @@ class RegistrationPage extends Component implements ActionListener {
             nextBtn.setBackground(new Color(141, 210, 93));
             backBtn.setBackground(new Color(184, 229, 154));
             registerUser();
-            // šis jāpačeko, jo izpilde nav laba
 
             /*if(passwordTF.getPassword().length== 0 || repeatPasswordTF.getPassword().length== 0) {
                 falses++;
@@ -584,10 +553,12 @@ class OrderPageSelectItem implements ActionListener, MouseListener {
 } //End OrderPageSelectItem class
 
 class OrderPage_StoreDocuments extends Component implements ActionListener, MouseListener {
+    WriteTextToFile wttf= new WriteTextToFile();
+    GetTextFromFile gtff= new GetTextFromFile();
     String elevatorIs= "1"; // apzīmē vai ir lifts(0- nav lifta, 1- ir lifts)
     String floorA= "0";
     String currentTime= getCurrentTime();
-    String user_ID= getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
+    String user_ID= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
     MyFrame storeDocumentsFrame= new MyFrame("Document Solutions Store Documents Page");
     MyTransparentLabel label_1 = new MyTransparentLabel(65, 100, 240, 240);
     MyTransparentLabel label_2 = new MyTransparentLabel(330, 100, 240, 240);
@@ -628,7 +599,7 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
 // components #6
     MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
     OrderPage_StoreDocuments() {
-        writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt", currentTime);
+        wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt", currentTime);
         System.out.println("UserIDs: ID"+ user_ID+"#001S");
 // components ################################################### #1
         addressTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
@@ -706,11 +677,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
     } // End OrderPage_StoreDocuments()
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*if(elevatorIs.equals("0")) {
-            floor= floorTextF.getText();
-        } else{
-            floor= "0";
-        }*/
         if(e.getSource().equals(yesBtn)) {
             floorA= "0";
             elevatorIs= "1";
@@ -728,10 +694,19 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
             boxSideText2.setVisible(true);
         }
         if(e.getSource().equals(nextBtn)) {
-            // šeit ir nepieciešams kods, kas aptver visu ievadīto info un nogādā tālāk
+            String sourceFolder= "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
+            wttf.writeTextToFile(sourceFolder+"address.txt", addressTextArea.getText());
+            wttf.writeTextToFile(sourceFolder+"time.txt", workingTimeTextF.getText());
+            wttf.writeTextToFile(sourceFolder+"notes.txt", notesTextArea.getText());
+            wttf.writeTextToFile(sourceFolder+"boxes.txt", boxTextF.getText());
+            wttf.writeTextToFile(sourceFolder+"elevator.txt", elevatorIs);
+            if(elevatorIs.equals("1")) {
+                wttf.writeTextToFile(sourceFolder+"floor.txt", floorA);
+            } else if(elevatorIs.equals("0")) {
+                wttf.writeTextToFile(sourceFolder+"floor.txt", floorTextF.getText());
+            }
             registerOrderP();
-            //storeDocumentsFrame.dispose();
-            //new PreviousOrders();
+            new PreviousOrders();
         }
     }
 
@@ -775,13 +750,14 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
 
     OrderG orderG;
     private void registerOrderP() {
+        GetTextFromFile gtff= new GetTextFromFile();
         String address= addressTextArea.getText();
         String notes= notesTextArea.getText();
         String time= workingTimeTextF.getText();
         String boxes= boxTextF.getText();
         String elevator= elevatorIs;
         String floor= "-1";//= floorTextF.getText();
-        String currentTime= getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt");
+        String currentTime= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt");
         String userID= user_ID;
 
         if(elevatorIs.equals("1")) {
@@ -796,7 +772,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
         }
         // zemāk var izveidot validācijas piem. adresē jābūt skaidram LV-0000
         orderG = addOrderSToDatabase(address, notes, time, boxes, elevator, floor, currentTime, userID);
-        System.out.println("Visi orderi: "+ orderG); // šis rādās kā null....
         System.out.println("Stāvi: "+floor+" vs StāviA: "+floorA+" vs Stāvi.getText(): "+floorTextF.getText());
         if(orderG != null) {
             storeDocumentsFrame.dispose();
@@ -855,32 +830,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
             e.printStackTrace();
         }
         return orderG;
-    }
-
-    public String getTextFromFile(String textPath) {
-        String textFromFile= "";
-        Scanner sc;
-        {
-            try {
-                sc = new Scanner(Path.of(textPath), StandardCharsets.UTF_8);
-                sc.useDelimiter("$^");
-                textFromFile = sc.next(); sc.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return textFromFile;
-    }
-
-    public void writeTextToFile(String address, String data) {
-        File file= new File(address);
-        try{
-            FileWriter fileWriter= new FileWriter(file.getPath());
-            fileWriter.write(data);
-            fileWriter.close();
-        } catch (Exception f) {
-            System.out.println("Kautkas nogāja greizi.. "+ f);
-        }
     }
 
     public String getCurrentTime() {
@@ -1166,30 +1115,75 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
 } //End class OrderPage_ArchiveDocuments
 
 class PreviousOrders implements ActionListener, MouseListener {
+    String currentTime, address, time, boxes, elevator, floor, notes, orderType;
+
     MyFrame previousOrdersFrame= new MyFrame("Document Solutions Previous Orders Page");
     MyLabel topTextLabel= new MyLabel("23.06.2022 (Glabāšana)", 300, 10, 400, 30, 30);
     MyLabel addressTextLabel= new MyLabel("Adrese: "+"Rīga, Jasmuižas iela 3, 3, LV-1004", 200, 60, 500, 20, 18);
-    MyLabel timeTextLabel= new MyLabel("Darba laiks: "+"09:00- 19:30", 200, 90, 500, 20, 18);
-    MyLabel boxesTextLabel= new MyLabel("Kastes: "+"400"+" GB", 200, 120, 500, 20, 18);
-    MyLabel lvlTextLabel= new MyLabel("Stāvs: "+"0", 200, 150, 500, 20, 18);
-    MyLabel notesTextLabel= new MyLabel("Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 200, 180, 500, 20, 18);
-    MyLabel statussTextLabel= new MyLabel("Statuss : "+"GAIDA", 200, 210, 500, 20, 18);
-    MyLabel totalTextLabel= new MyLabel("Kopā: "+"235,0 Eiro + PVN 21%", 200, 240, 500, 30, 30);
-    MyLabel monthTextLabel= new MyLabel("*Mēneša maksa: "+"90,0 Eiro + PVN 21%", 200, 280, 500, 20, 18);
+    MyLabel addressTextLabel2= new MyLabel("", 200, 90, 500, 20, 18);
+    MyLabel timeTextLabel= new MyLabel("Darba laiks: "+"09:00- 19:30", 200, 120, 500, 20, 18);
+    MyLabel boxesTextLabel= new MyLabel("Kastes: "+"400"+" GB", 200, 150, 500, 20, 18);
+    MyLabel lvlTextLabel= new MyLabel("Stāvs: "+"0", 200, 180, 500, 20, 18);
+    MyLabel notesTextLabel= new MyLabel("Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 200, 210, 550, 20, 18);
+    MyLabel notesTextLabel2= new MyLabel("", 200, 240, 550, 20, 18);
+    MyLabel notesTextLabel3= new MyLabel("", 200, 280, 550, 20, 18);
+    MyLabel statussTextLabel= new MyLabel("Statuss : "+"GAIDA", 200, 320, 500, 20, 18);
+    MyLabel totalTextLabel= new MyLabel("Kopā: "+"235,0 Eiro + PVN 21%", 200, 360, 500, 30, 30);
+    MyLabel monthTextLabel= new MyLabel("*Mēneša maksa: "+"90,0 Eiro + PVN 21%", 200, 400, 500, 20, 18);
     PreviousOrders() {
 
-        //
+        try {
+            currentTime = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt");
+            address = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/address.txt");
+            time = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/time.txt");
+            boxes = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/boxes.txt");
+            elevator = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/elevator.txt");
+            floor = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/floor.txt");
+            notes = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/notes.txt");
+        } catch (Exception e) {
+            System.out.println("Kļūda: "+e);
+        }
+        orderType= " (Glabāšana)";
 
+        topTextLabel.setText(currentTime+orderType);
+        if(address.length() > 50 && address.length() <= 100) {
+            addressTextLabel.setText("Adrese: "+address.substring(0, 50));
+            addressTextLabel2.setText("            "+address.substring(50, address.length()-1));
+        } else if(address.length() <= 50) {
+            addressTextLabel.setText("Adrese: "+address);
+        }
+        timeTextLabel.setText("Darba laiks: "+time);
+        boxesTextLabel.setText("Kastes: "+boxes+" GB");
+        if(elevator.equals("1")) {
+            lvlTextLabel.setText("Lifts: IR");
+        } else if(elevator.equals("0")) {
+            lvlTextLabel.setText("Stāvs: "+floor);
+        }
+
+        if(notes.length() > 50 && notes.length() <= 100) {
+            notesTextLabel.setText("Piezīmes: "+notes.substring(0, 50));
+            notesTextLabel2.setText("                "+notes.substring(50, notes.length()-1));
+        } else if(notes.length() > 100) {
+            notesTextLabel.setText("Piezīmes: "+notes.substring(0, 50));
+            notesTextLabel2.setText("                "+notes.substring(50, 100));
+            notesTextLabel3.setText("                "+notes.substring(100, notes.length()-1));
+        } else if(notes.length() <= 50){
+            notesTextLabel.setText("Piezīmes: "+notes);
+        }
         previousOrdersFrame.add(monthTextLabel);
         previousOrdersFrame.add(totalTextLabel);
         previousOrdersFrame.add(statussTextLabel);
+        previousOrdersFrame.add(notesTextLabel3);
+        previousOrdersFrame.add(notesTextLabel2);
         previousOrdersFrame.add(notesTextLabel);
         previousOrdersFrame.add(lvlTextLabel);
         previousOrdersFrame.add(boxesTextLabel);
         previousOrdersFrame.add(timeTextLabel);
+        previousOrdersFrame.add(addressTextLabel2);
         previousOrdersFrame.add(addressTextLabel);
         previousOrdersFrame.add(topTextLabel);
         previousOrdersFrame.setLayout(null);
@@ -1224,6 +1218,21 @@ class PreviousOrders implements ActionListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public String getTextFromFile(String textPath) {
+        String textFromFile= "";
+        Scanner sc;
+        {
+            try {
+                sc = new Scanner(Path.of(textPath), StandardCharsets.UTF_8);
+                sc.useDelimiter("$^");
+                textFromFile = sc.next(); sc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return textFromFile;
     }
 } //End class PreviousOrders
 
