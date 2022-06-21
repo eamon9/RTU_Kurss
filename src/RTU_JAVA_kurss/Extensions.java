@@ -106,11 +106,11 @@ class MyPasswordField extends JPasswordField {
     }
 }
 
-/*class MyComboBox extends JComboBox {
-    MyComboBox(String[] list, int x, int y, int width, int height) {
-        this.setEditable(true);
+class MyComboBox extends JComboBox {
+    MyComboBox(String text, int x, int y, int width, int height) {
         this.setBounds(x, y, width, height);
         this.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        this.addItem(text);
     }
-}*/
+}
 

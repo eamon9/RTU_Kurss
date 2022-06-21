@@ -6,15 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 class MainPage implements ActionListener {
     // zemāk deklarējam un inicializējam JFrame, JLabel, JButton utt, lai būtu pieejami arī ārpus MainPage()
@@ -54,6 +48,9 @@ class MainPage implements ActionListener {
 
 class LoginPage extends Component implements ActionListener, MouseListener {
     WriteTextToFile wttf= new WriteTextToFile();
+    GetTextFromFile gtff= new GetTextFromFile();
+    GetUserInfo gui= new GetUserInfo();
+    GetLastOrdersInfo gloi= new GetLastOrdersInfo();
     MyFrame loginPageFrame= new MyFrame("Document Solutions Login Page");
     MyTransparentTextLabel registeredUserLabel= new MyTransparentTextLabel("Esmu reģistrēts lietotājs", 85, 60, 250, 50);
     MyTransparentTextLabel notRegisteredUserLabel= new MyTransparentTextLabel("Jums nav lietotāja profila?", 75, 60, 250, 50);
@@ -68,12 +65,10 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 
     LoginPage() {
 //Reģistrēta lietoytāja komponentes
-
         mailTextField.addMouseListener(this);
         loginBtn.addActionListener(this);
         registrationBtn.addActionListener(this);
         fakePasswordField.addMouseListener(this);
-
         passwordField.setVisible(false);
 
 //left side label
@@ -105,14 +100,23 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 
             if(user != null) {
                 String sourceFolder= "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
-                System.out.println("Sveiks "+user.name+"! Jūsu e-pasts: "+user.mail+" Tel. nr.: "+user.mobile);
+                System.out.println("Sveiks "+user.name+"!");
                 wttf.writeTextToFile(sourceFolder+"users_ID.txt", user.UserID);
-                //writeTextToFile(sourceFolder+"uEmail.txt", user.mail);
-                //writeTextToFile(sourceFolder+"uSurname.txt", user.surname);
-                //writeTextToFile(sourceFolder+"uName.txt", user.name);
-                //writeTextToFile(sourceFolder+"uMobile.txt", user.mobile);
-                GetUserInfo getUserInfo= new GetUserInfo();
-                System.out.println(getUserInfo.getUsersInfo(user.UserID, "name"));
+                String userIDs= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
+                //izvadīt vārdu, kas ir esošā lietotāja ID
+                System.out.println(gui.getUsersInfo(user.UserID, "name"));
+
+                //izvadīt- šķirojot pasītījumus pēc (OrderID), pēdējā lietotāja ID(userID)
+                //System.out.println(gloi.getLastOrdersInfo("orderID", "userID"));
+
+                //izvadīt- starp lietotājiem(userID), šķirojot pēc lietotājiem(userID), kas ir pēdējais pasūtījuma nr(OrderID)
+                //System.out.println(gloi.getLastOrdersInfo("userID", "OrderId", "userId"));
+
+                //      Izvadīt esošā lietotāja pēdējo pasūtījuma orderID,
+                //kā pirmo parametru vadot (kurā sarakstā jāmeklē, piem. esošā userId),
+                //otro elementu (pēc kā sortējam, piem. orderID, jo viņi neatkārtojas un iet pēc kārtas),
+                //trešo elementu (ko izvadīt konsolē, piem. orderID)
+                System.out.println("Pēdējā pasūtījuma ID: "+gloi.getLastOrdersInfo(userIDs, "orderID", "orderID"));
 
                 loginPageFrame.dispose();
                 new OrderPageSelectItem();
@@ -172,17 +176,6 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 
     }
 
-    boolean CheckIfFieldsCorrect(String name) {
-        if(name.contains("@") && name.contains(".")) {
-            System.out.println("Yes "+name+" contains '@' and '.'");
-            return true;
-        } else{
-            System.out.println("No "+name+" doesn't contains '@' and '.'");
-            return false;
-        }
-
-    }
-
     public User user;
     private User getAuthenticUser(String mail, String password) {
         User user= null;
@@ -221,6 +214,9 @@ class LoginPage extends Component implements ActionListener, MouseListener {
 } //End LoginPage class
 
 class RegistrationPage extends Component implements ActionListener {
+    GetTextFromFile gtff= new GetTextFromFile();
+    WriteTextToFile wttf= new WriteTextToFile();
+
     MyFrame registrationPageFrame= new MyFrame("Document Solutions registration Form");
     MyTransparentLabel mainLabel= new MyTransparentLabel(65, 100, 770, 500);
     MyRadioButton individualRadioBtn= new MyRadioButton("Privātpersona", 50, 10, 200, 50);
@@ -258,7 +254,6 @@ class RegistrationPage extends Component implements ActionListener {
     MyTextField ibanTF= new MyTextField(380, 400, 150, 40);
     MyTextField bankTF= new MyTextField(540, 400, 170, 40);
 
-    MyTextField[] allTextF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF, mobNrTF, mailTF, surnameTF, nameTF};
     MyLabel[] labelsForJuridical= new MyLabel[] {companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
     MyTextField[] juridicalTF= new MyTextField[] {companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
 
@@ -311,7 +306,6 @@ class RegistrationPage extends Component implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int falses= 0;
         if(e.getSource().equals(backBtn)) {
             backBtn.setBackground(new Color(141, 210, 93));
             nextBtn.setBackground(new Color(184, 229, 154));
@@ -321,28 +315,8 @@ class RegistrationPage extends Component implements ActionListener {
         if(e.getSource().equals(nextBtn)) {
             nextBtn.setBackground(new Color(141, 210, 93));
             backBtn.setBackground(new Color(184, 229, 154));
+            wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/uEmail.txt", mailTF.getText());
             registerUser();
-
-            /*if(passwordTF.getPassword().length== 0 || repeatPasswordTF.getPassword().length== 0) {
-                falses++;
-                System.out.println("Parolītes nav ievadītas");
-            }
-            for (int i = 0; i < allTextF.length; i++) {
-                if(allTextF[i].getText().equals("")) {
-                    falses++;
-                }
-            }
-            if(falses> 0) {
-                System.out.println(falses);
-                JOptionPane.showMessageDialog(this, "Lūdzu aizpildiet visus laukus", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
-                return;
-            } else{
-
-                registrationPageFrame.dispose();
-                new LoginPage();
-            }*/
-            // jāpārbauda vai visi lauki atbilst rakstzīmes norādītajam,
-            // lai varētu turpināt..
         }
         if(e.getSource().equals(individualRadioBtn)) {
             for (int i = 0; i < labelsForJuridical.length; i++) {
@@ -386,11 +360,14 @@ class RegistrationPage extends Component implements ActionListener {
         }
 
         user= addUserToDatabase(name, surname, mail, password, mobile);
-        System.out.println("Visi useri: "+user);
         if(user != null) {
             registrationPageFrame.dispose();
-            new LoginPage();
-            System.out.println(user);
+            LoginPage loginPage= new LoginPage();
+            loginPage.mailTextField.setText(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/uEmail.txt")); //ievada esošo reģistrēto e-pastu
+            loginPage.mailTextField.setEditable(true);
+            loginPage.fakePasswordField.setVisible(false);
+            loginPage.passwordField.setVisible(true);
+
         }
         else {
             JOptionPane.showMessageDialog(this, "Neizdevās izveidot jaunu lietotāju", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
@@ -407,7 +384,7 @@ class RegistrationPage extends Component implements ActionListener {
             Connection connection= DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 
             Statement statement = connection.createStatement();
-            String sql= "INSERT INTO users (UserID, name, surname, mail, password, mobile) "+ "VALUES (?, ?, ?, ?, ?, ?) ";
+            String sql= "INSERT INTO users (name, surname, mail, password, mobile) "+ "VALUES (?, ?, ?, ?, ?) ";
             PreparedStatement preparedStatement= connection.prepareStatement(sql);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
@@ -424,12 +401,11 @@ class RegistrationPage extends Component implements ActionListener {
                 user.password= password;
                 user.mobile= mobile;
             }
-
             statement.close();
             connection.close();
         } catch (SQLException s) {
             if(s.getErrorCode() == 1062) {
-                JOptionPane.showMessageDialog(this, "Šāds lietotājs/ e-pasts jau eksitē!", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Šāds telefons/ e-pasts jau eksitē!", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -553,11 +529,11 @@ class OrderPageSelectItem implements ActionListener, MouseListener {
 } //End OrderPageSelectItem class
 
 class OrderPage_StoreDocuments extends Component implements ActionListener, MouseListener {
-    WriteTextToFile wttf= new WriteTextToFile();
+    GetCurrentTime gct= new GetCurrentTime();
     GetTextFromFile gtff= new GetTextFromFile();
     String elevatorIs= "1"; // apzīmē vai ir lifts(0- nav lifta, 1- ir lifts)
     String floorA= "0";
-    String currentTime= getCurrentTime();
+    String currentTime= gct.getCurrentTime();
     String user_ID= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
     MyFrame storeDocumentsFrame= new MyFrame("Document Solutions Store Documents Page");
     MyTransparentLabel label_1 = new MyTransparentLabel(65, 100, 240, 240);
@@ -599,7 +575,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
 // components #6
     MyButton nextBtn= new MyButton("Iesniegt", 20, 100, 200, 50);
     OrderPage_StoreDocuments() {
-        wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt", currentTime);
         System.out.println("UserIDs: ID"+ user_ID+"#001S");
 // components ################################################### #1
         addressTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
@@ -694,17 +669,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
             boxSideText2.setVisible(true);
         }
         if(e.getSource().equals(nextBtn)) {
-            String sourceFolder= "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
-            wttf.writeTextToFile(sourceFolder+"address.txt", addressTextArea.getText());
-            wttf.writeTextToFile(sourceFolder+"time.txt", workingTimeTextF.getText());
-            wttf.writeTextToFile(sourceFolder+"notes.txt", notesTextArea.getText());
-            wttf.writeTextToFile(sourceFolder+"boxes.txt", boxTextF.getText());
-            wttf.writeTextToFile(sourceFolder+"elevator.txt", elevatorIs);
-            if(elevatorIs.equals("1")) {
-                wttf.writeTextToFile(sourceFolder+"floor.txt", floorA);
-            } else if(elevatorIs.equals("0")) {
-                wttf.writeTextToFile(sourceFolder+"floor.txt", floorTextF.getText());
-            }
             registerOrderP();
             new PreviousOrders();
         }
@@ -750,14 +714,13 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
 
     OrderG orderG;
     private void registerOrderP() {
-        GetTextFromFile gtff= new GetTextFromFile();
         String address= addressTextArea.getText();
         String notes= notesTextArea.getText();
         String time= workingTimeTextF.getText();
         String boxes= boxTextF.getText();
         String elevator= elevatorIs;
-        String floor= "-1";//= floorTextF.getText();
-        String currentTime= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt");
+        String floor= "-1";
+        String currentTime= gct.getCurrentTime();
         String userID= user_ID;
 
         if(elevatorIs.equals("1")) {
@@ -831,15 +794,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
         }
         return orderG;
     }
-
-    public String getCurrentTime() {
-        String time= "";
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime now = LocalDateTime.now();
-        time= dtf.format((now));
-        return time;
-    }
-
 } //End class OrderPage_StoreDocuments
 
 class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
@@ -1119,34 +1073,35 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
 } //End class OrderPage_ArchiveDocuments
 
 class PreviousOrders implements ActionListener, MouseListener {
-    String currentTime, address, time, boxes, elevator, floor, notes, orderType;
+    GetTextFromFile gtff= new GetTextFromFile();
+    GetLastOrdersInfo gloi= new GetLastOrdersInfo();
+    GetOrdersInfo goi= new GetOrdersInfo();
+    GetOrderPrice gop= new GetOrderPrice();
+    String currentTime, address, time, boxes, elevator, floor, notes, orderType, currentUser, currentOrderID;
 
     MyFrame previousOrdersFrame= new MyFrame("Document Solutions Previous Orders Page");
-    MyLabel topTextLabel= new MyLabel("23.06.2022 (Glabāšana)", 300, 10, 400, 30, 30);
-    MyLabel addressTextLabel= new MyLabel("Adrese: "+"Rīga, Jasmuižas iela 3, 3, LV-1004", 200, 60, 500, 20, 18);
+    MyLabel topTextLabel= new MyLabel("*TEST* 23.06.2022 (Glabāšana)", 300, 10, 400, 30, 30);
+    MyLabel addressTextLabel= new MyLabel("*TEST* Adrese: "+"Rīga, Jasmuižas iela 3, 3, LV-1004", 200, 60, 500, 20, 18);
     MyLabel addressTextLabel2= new MyLabel("", 200, 90, 500, 20, 18);
-    MyLabel timeTextLabel= new MyLabel("Darba laiks: "+"09:00- 19:30", 200, 120, 500, 20, 18);
-    MyLabel boxesTextLabel= new MyLabel("Kastes: "+"400"+" GB", 200, 150, 500, 20, 18);
-    MyLabel lvlTextLabel= new MyLabel("Stāvs: "+"0", 200, 180, 500, 20, 18);
-    MyLabel notesTextLabel= new MyLabel("Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 200, 210, 550, 20, 18);
+    MyLabel timeTextLabel= new MyLabel("*TEST* Darba laiks: "+"09:00- 19:30", 200, 120, 500, 20, 18);
+    MyLabel boxesTextLabel= new MyLabel("*TEST* Kastes: "+"400"+" GB", 200, 150, 500, 20, 18);
+    MyLabel lvlTextLabel= new MyLabel("*TEST* Stāvs: "+"0", 200, 180, 500, 20, 18);
+    MyLabel notesTextLabel= new MyLabel("*TEST* Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 200, 210, 550, 20, 18);
     MyLabel notesTextLabel2= new MyLabel("", 200, 240, 550, 20, 18);
     MyLabel notesTextLabel3= new MyLabel("", 200, 280, 550, 20, 18);
-    MyLabel statussTextLabel= new MyLabel("Statuss : "+"GAIDA", 200, 320, 500, 20, 18);
-    MyLabel totalTextLabel= new MyLabel("Kopā: "+"235,0 Eiro + PVN 21%", 200, 360, 500, 30, 30);
-    MyLabel monthTextLabel= new MyLabel("*Mēneša maksa: "+"90,0 Eiro + PVN 21%", 200, 400, 500, 20, 18);
+    MyLabel statussTextLabel= new MyLabel("*TEST* Statuss : "+"GAIDA", 200, 320, 500, 20, 18);
+    MyLabel totalTextLabel= new MyLabel("*TEST* Kopā: "+"235,0 Eiro + PVN 21%", 200, 360, 500, 30, 30);
+    MyLabel monthTextLabel= new MyLabel("*TEST* *Mēneša maksa: "+"90,0 Eiro + PVN 21%", 200, 400, 500, 20, 18);
     PreviousOrders() {
-
-        try {
-            currentTime = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/currentTime.txt");
-            address = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/address.txt");
-            time = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/time.txt");
-            boxes = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/boxes.txt");
-            elevator = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/elevator.txt");
-            floor = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/floor.txt");
-            notes = getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/notes.txt");
-        } catch (Exception e) {
-            System.out.println("Kļūda: "+e);
-        }
+        currentUser= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
+        currentOrderID= gloi.getLastOrdersInfo(currentUser, "orderID", "orderID");
+        currentTime= goi.getOrdersInfo(currentOrderID, "date_time");
+        address= goi.getOrdersInfo(currentOrderID, "address");
+        time= goi.getOrdersInfo(currentOrderID, "time");
+        boxes= goi.getOrdersInfo(currentOrderID, "boxes");
+        elevator= goi.getOrdersInfo(currentOrderID, "elevator");
+        floor= goi.getOrdersInfo(currentOrderID, "floor");
+        notes= goi.getOrdersInfo(currentOrderID, "notes");
         orderType= " (Glabāšana)";
 
         topTextLabel.setText(currentTime+orderType);
@@ -1157,11 +1112,11 @@ class PreviousOrders implements ActionListener, MouseListener {
             addressTextLabel.setText("Adrese: "+address);
         }
         timeTextLabel.setText("Darba laiks: "+time);
-        boxesTextLabel.setText("Kastes: "+boxes+" GB");
+        boxesTextLabel.setText("Kastes(gb): "+boxes);
         if(elevator.equals("1")) {
             lvlTextLabel.setText("Lifts: IR");
         } else if(elevator.equals("0")) {
-            lvlTextLabel.setText("Stāvs: "+floor);
+            lvlTextLabel.setText("Stāvs: "+floor+" (Lifta NAV!)");
         }
 
         if(notes.length() > 50 && notes.length() <= 100) {
@@ -1174,6 +1129,9 @@ class PreviousOrders implements ActionListener, MouseListener {
         } else if(notes.length() <= 50){
             notesTextLabel.setText("Piezīmes: "+notes);
         }
+        totalTextLabel.setText("Kopā: "+gop.getOrderPrice(boxes, floor)+"€ + PVN 21%");
+        monthTextLabel.setText("*Mēneša maksa: "+Integer.parseInt(boxes)* 0.6+"€ + PVN 21%");
+
         previousOrdersFrame.add(monthTextLabel);
         previousOrdersFrame.add(totalTextLabel);
         previousOrdersFrame.add(statussTextLabel);
@@ -1219,39 +1177,86 @@ class PreviousOrders implements ActionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
-
-    public String getTextFromFile(String textPath) {
-        String textFromFile= "";
-        Scanner sc;
-        {
-            try {
-                sc = new Scanner(Path.of(textPath), StandardCharsets.UTF_8);
-                sc.useDelimiter("$^");
-                textFromFile = sc.next(); sc.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return textFromFile;
-    }
 } //End class PreviousOrders
 
 class AdministratorPage implements ActionListener {
-    String[] clients= {"ID=3 #001 G", "ID=1 #002 G", "ID=3 #003 S", "ID=3 #004 A", "ID=1 #005 S", "ID=2 #006 G", "ID=4 #007 A", };
+    WriteTextToFile wttf= new WriteTextToFile();
+    GetTextFromFile gtff= new GetTextFromFile();
+    GetOrderPrice gop= new GetOrderPrice();
+
+    MyLabel topTextLabel= new MyLabel("", 300, 10, 400, 30, 20);
+    MyLabel addressTextLabel= new MyLabel("Adrese: ", 250, 50, 500, 20, 16);
+    MyLabel addressTextLabel2= new MyLabel("", 250, 70, 500, 20, 16);
+    MyLabel timeTextLabel= new MyLabel("Darba laiks: ", 250, 90, 500, 20, 16);
+    MyLabel boxesTextLabel= new MyLabel("Kastes: ", 250, 110, 500, 20, 16);
+    MyLabel lvlTextLabel= new MyLabel("Stāvs: ", 250, 130, 500, 20, 16);
+    MyLabel notesTextLabel= new MyLabel("Piezīmes: ", 250, 150, 550, 20, 16);
+    MyLabel notesTextLabel2= new MyLabel("", 250, 170, 550, 20, 16);
+    MyLabel notesTextLabel3= new MyLabel("", 250, 190, 550, 20, 16);
+    MyLabel totalTextLabel= new MyLabel("Kopā: ", 250, 250, 500, 30, 20);
+    MyLabel monthTextLabel= new MyLabel("*Mēneša maksa: ", 250, 290, 500, 20, 16);
 
     MyFrame adminPageFrame= new MyFrame("Administrator Page");
     MyTransparentLabel mainLabel= new MyTransparentLabel(65, 100, 770, 500);
-    //MyComboBox comboBox= new MyComboBox(clients, 50, 50, 150, 50);
 
-    JComboBox comboBox= new JComboBox(clients);
+    MyComboBox usersBox= new MyComboBox("UserID", 50, 20, 150, 50);
+    MyComboBox ordersBox= new MyComboBox("OrderID", 50, 145, 150, 50);
+
+    MyButton setUserBtn= new MyButton("ORDERS", 25, 80, 200, 50);
+    MyButton showOrderBtn= new MyButton("SHOW", 25, 205, 200, 50);
+
+
+    String orderNr= "", userNr= "", orderFromList= "", addressFromList= "", notesFromList= "",
+            timeFromList= "", boxesFromList= "", elevatorFromList= "", floorFromList= "", dateFromList= "", userID= "";
+
+    String[] listsArray= new String[] {orderFromList, addressFromList, notesFromList, timeFromList, boxesFromList, elevatorFromList, floorFromList, dateFromList, userID};
+    String[] databaseTitlesArray = new String[] {"OrderID", "address", "notes", "time", "boxes", "elevator", "floor", "date_time", "UserID"};
+    int tableSize= Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt"));
+    ArrayList<ArrayList<String>> outer = new ArrayList<ArrayList<String>>();
+    String ordersArray[] = new String[tableSize]; // glabās visus lietotāja ID
     AdministratorPage() {
 
-        comboBox.addActionListener(this);
-        comboBox.setEditable(true);
-        comboBox.setBounds(50, 50, 150, 50);
-        comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        showOrderBtn.addActionListener(this);
+        setUserBtn.addActionListener(this);
+        ordersBox.addActionListener(this);
+        usersBox.addActionListener(this);
+        ordersBox.setVisible(false);
+        showOrderBtn.setVisible(false);
+        setUserBtn.setVisible(false);
+        mainLabel.add(ordersBox);
+        mainLabel.add(usersBox);
+        mainLabel.add(setUserBtn);
+        mainLabel.add(showOrderBtn);
+        mainLabel.add(topTextLabel);
+        mainLabel.add(addressTextLabel);
+        mainLabel.add(addressTextLabel2);
+        mainLabel.add(timeTextLabel);
+        mainLabel.add(boxesTextLabel);
+        mainLabel.add(lvlTextLabel);
+        mainLabel.add(notesTextLabel);
+        mainLabel.add(notesTextLabel2);
+        mainLabel.add(notesTextLabel3);
+        mainLabel.add(totalTextLabel);
+        mainLabel.add(monthTextLabel);
 
-        mainLabel.add(comboBox);
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT userId FROM users ORDER BY userID");
+            while (resultSet.next()) {
+                usersBox.addItem(resultSet.getString("userID"));
+                ArrayList<String> inner = new ArrayList<String>();
+                inner.add(resultSet.getString("userID"));
+                outer.add(inner);
+            }
+            // saliekam visu parastajā Array
+            for(int j =0;j<outer.size();j++){
+                ordersArray[j] = String.valueOf(outer.get(j));
+            }
+            System.out.println(Arrays.toString(ordersArray));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         adminPageFrame.add(mainLabel);
         adminPageFrame.setLayout(null);
@@ -1260,6 +1265,126 @@ class AdministratorPage implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(usersBox)) {
+            usersBox.removeItem("UserID");
+            setUserBtn.setVisible(true);
+            ordersBox.removeAllItems();
 
+            try { // saskaita cik kopā ir klientu ir saglabāti datubāzē
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM users");
+                while (getColumnSize.next()) {
+                    tableSize= Integer.parseInt(getColumnSize.getString("COUNT(*)"));
+                    wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt", String.valueOf(tableSize));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if(e.getSource().equals(setUserBtn)) { // uzspiežot ORDERS pogu...
+            userNr= (String) usersBox.getSelectedItem(); // userNr glabā izvēlētā lietotāja UserID
+            System.out.println("ID= "+userNr);
+
+            try { //izveido dropdown sarakstu ar orderiem pēc lietotāja ID
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT orderId FROM orders WHERE UserID="+userNr+" ORDER BY orderID");
+                while (resultSet.next()) {
+                    ordersBox.addItem(resultSet.getString("orderID"));
+                    /*if(resultSet.getString("orderID").length() == 1) {
+                        ordersBox.addItem("# = 00" + resultSet.getString("orderID"));
+                    } else if(resultSet.getString("orderID").length() == 2) {
+                        ordersBox.addItem("# = 0" + resultSet.getString("orderID"));
+                    } else if(resultSet.getString("orderID").length() == 3) {
+                        ordersBox.addItem("# = " + resultSet.getString("orderID"));
+                    }*/
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            ordersBox.setVisible(true);
+            showOrderBtn.setVisible(true);
+
+        }
+        if(e.getSource().equals(showOrderBtn)) { //uzspieržot SHOW pogu...
+            orderNr= (String) ordersBox.getSelectedItem(); // orderNr glabā izvēlētā lietotāja OrderID
+            System.out.println("#"+orderNr);
+
+            try { // piepilda listsArray ar vērtībām
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE OrderID="+orderNr);
+                while (resultSet.next()) {
+                    for (int i = 0; i < listsArray.length; i++) {
+                        listsArray[i]= resultSet.getString(databaseTitlesArray[i]);
+                    }
+                    orderFromList= listsArray[0];
+                    addressFromList= listsArray[1];
+                    notesFromList= listsArray[2];
+                    timeFromList= listsArray[3];
+                    boxesFromList= listsArray[4];
+                    elevatorFromList= listsArray[5];
+                    floorFromList= listsArray[6];
+                    dateFromList= listsArray[7];
+                    userID= listsArray[8];
+                    System.out.println(Arrays.toString(listsArray));
+                    topTextLabel.setText("ID= "+userID+" #00"+orderNr+" (Glabāšana) "+dateFromList);
+                    if(addressFromList.length() > 60 && addressFromList.length() <= 120) {
+                        addressTextLabel.setText("Adrese: "+addressFromList.substring(0, 60));
+                        addressTextLabel2.setText("            "+addressFromList.substring(60, addressFromList.length()-1));
+                    } else if(addressFromList.length() <= 60) {
+                        addressTextLabel.setText("Adrese: "+addressFromList);
+                        addressTextLabel2.setText("");
+                    }
+                    timeTextLabel.setText("Darba laiks: "+timeFromList);
+                    boxesTextLabel.setText("Kastes(gb): "+boxesFromList);
+                    if(elevatorFromList.equals("1")) {
+                        lvlTextLabel.setText("Lifts: IR");
+                    } else if(elevatorFromList.equals("0")) {
+                        lvlTextLabel.setText("Stāvs: "+floorFromList+" (Lifta NAV!)");
+                    }
+
+                    if(notesFromList.length() > 60 && notesFromList.length() <= 120) {
+                        notesTextLabel.setText("Piezīmes: "+notesFromList.substring(0, 60));
+                        notesTextLabel2.setText("                "+notesFromList.substring(60, notesFromList.length()-1));
+                        notesTextLabel3.setText("");
+                    } else if(notesFromList.length() > 120) {
+                        notesTextLabel.setText("Piezīmes: "+notesFromList.substring(0, 60));
+                        notesTextLabel2.setText("                "+notesFromList.substring(60, 120));
+                        notesTextLabel3.setText("                "+notesFromList.substring(120, notesFromList.length()-1));
+                    } else if(notesFromList.length() <= 60){
+                        notesTextLabel.setText("Piezīmes: "+notesFromList);
+                        notesTextLabel2.setText("");
+                        notesTextLabel3.setText("");
+                    }
+                    totalTextLabel.setText("Kopā: "+gop.getOrderPrice(boxesFromList, floorFromList)+"€ + PVN 21%");
+                    monthTextLabel.setText("*Mēneša maksa: "+Integer.parseInt(boxesFromList)* 0.6+"€ + PVN 21%");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if(e.getSource().equals(ordersBox)) {
+            ordersBox.removeItem("OrderID");
+            /*try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT orderId FROM orders ORDER BY orderID");
+                while (resultSet.next()) {
+                    ordersBox.addItem(resultSet.getString("orderID"));
+                    *//*if(resultSet.getString("orderID").length() == 1) {
+                        ordersBox.addItem("# = 00" + resultSet.getString("orderID"));
+                    } else if(resultSet.getString("orderID").length() == 2) {
+                        ordersBox.addItem("# = 0" + resultSet.getString("orderID"));
+                    } else if(resultSet.getString("orderID").length() == 3) {
+                        ordersBox.addItem("# = " + resultSet.getString("orderID"));
+                    }*//*
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }*/
+        }
     }
 }
