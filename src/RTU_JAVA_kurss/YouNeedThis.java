@@ -5,10 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -152,6 +149,7 @@ class WriteTextToFile {
         }
     }
 }
+
 class GetOrderPrice {
     public double getOrderPrice(String boxes, String floor) {
         double orderPrice= 0.00, orderBoxPrise= 1.00;
@@ -168,7 +166,10 @@ class GetOrderPrice {
             orderBoxPrise= 0.60;
         } else if(orderBoxes >= 10000) {
             orderBoxPrise= 0.50;
+        } else {
+            System.out.println("Upsī, kļūdiņa! ");
         }
+
         if(orderFloor < 1) {
             orderPrice= (orderBoxes*orderBoxPrise)+((int)orderBoxes/30)*15;
         } else{
@@ -178,6 +179,41 @@ class GetOrderPrice {
             orderPrice+= 7;
         }
         return orderPrice;
+    }
+}
+
+class UpdateDatabase{
+    public void updateDatabase(String OrderID, String note, boolean statuss) {
+        String accept= "Akceptēts!";
+        String decline= "Atteikts!";
+        String answer= "";
+        if(statuss== true) {
+            answer= accept;
+        } else{
+            answer= decline;
+        }
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            PreparedStatement preparedStmt= connection.prepareStatement("UPDATE orders SET accept = ? WHERE OrderID = ?");
+            PreparedStatement preparedStmt2= connection.prepareStatement("UPDATE orders SET admin_note = ? WHERE OrderID = ?");
+            preparedStmt.setString(1, answer);
+            preparedStmt.setString(2, OrderID);
+            preparedStmt2.setString(1, note);
+            preparedStmt2.setString(2, OrderID);
+            preparedStmt.executeUpdate();
+            preparedStmt2.executeUpdate();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class MySQL_Shortcuts{
+    public String mySQL_JDBC_Shortcut1() {
+        return "Connection connection = DriverManager.getConnection(\"jdbc:mysql://localhost:3306/JAVA_IT\", \"root\", \"e6127609-\");\n" +
+                "\n" +
+                "            Statement statement = connection.createStatement();";
     }
 }
 

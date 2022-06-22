@@ -96,33 +96,38 @@ class LoginPage extends Component implements ActionListener, MouseListener {
             String mail= mailTextField.getText();
             String password= String.valueOf(passwordField.getPassword());
 
-            user = getAuthenticUser(mail, password);
-
-            if(user != null) {
-                String sourceFolder= "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
-                System.out.println("Sveiks "+user.name+"!");
-                wttf.writeTextToFile(sourceFolder+"users_ID.txt", user.UserID);
-                String userIDs= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
-                //izvadīt vārdu, kas ir esošā lietotāja ID
-                System.out.println(gui.getUsersInfo(user.UserID, "name"));
-
-                //izvadīt- šķirojot pasītījumus pēc (OrderID), pēdējā lietotāja ID(userID)
-                //System.out.println(gloi.getLastOrdersInfo("orderID", "userID"));
-
-                //izvadīt- starp lietotājiem(userID), šķirojot pēc lietotājiem(userID), kas ir pēdējais pasūtījuma nr(OrderID)
-                //System.out.println(gloi.getLastOrdersInfo("userID", "OrderId", "userId"));
-
-                //      Izvadīt esošā lietotāja pēdējo pasūtījuma orderID,
-                //kā pirmo parametru vadot (kurā sarakstā jāmeklē, piem. esošā userId),
-                //otro elementu (pēc kā sortējam, piem. orderID, jo viņi neatkārtojas un iet pēc kārtas),
-                //trešo elementu (ko izvadīt konsolē, piem. orderID)
-                System.out.println("Pēdējā pasūtījuma ID: "+gloi.getLastOrdersInfo(userIDs, "orderID", "orderID"));
-
+            if(mail.equals("info@documentsolutions.lv") && password.equals("administrator")) {
                 loginPageFrame.dispose();
-                new OrderPageSelectItem();
-            }
-            else {
-                JOptionPane.showMessageDialog(LoginPage.this, "Lietotājvārds un/vai parole nepareiza", "Mēģiniet vēlreiz!", JOptionPane.ERROR_MESSAGE);
+                new AdministratorPage();
+            } else {
+
+                user = getAuthenticUser(mail, password);
+
+                if (user != null) {
+                    String sourceFolder = "/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/";
+                    System.out.println("Sveiks " + user.name + "!");
+                    wttf.writeTextToFile(sourceFolder + "users_ID.txt", user.UserID);
+                    String userIDs = gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
+                    //izvadīt vārdu, kas ir esošā lietotāja ID
+                    System.out.println(gui.getUsersInfo(user.UserID, "name"));
+
+                    //izvadīt- šķirojot pasītījumus pēc (OrderID), pēdējā lietotāja ID(userID)
+                    //System.out.println(gloi.getLastOrdersInfo("orderID", "userID"));
+
+                    //izvadīt- starp lietotājiem(userID), šķirojot pēc lietotājiem(userID), kas ir pēdējais pasūtījuma nr(OrderID)
+                    //System.out.println(gloi.getLastOrdersInfo("userID", "OrderId", "userId"));
+
+                    //      Izvadīt esošā lietotāja pēdējo pasūtījuma orderID,
+                    //kā pirmo parametru vadot (kurā sarakstā jāmeklē, piem. esošā userId),
+                    //otro elementu (pēc kā sortējam, piem. orderID, jo viņi neatkārtojas un iet pēc kārtas),
+                    //trešo elementu (ko izvadīt konsolē, piem. orderID)
+                    System.out.println("Pēdējā pasūtījuma ID: " + gloi.getLastOrdersInfo(userIDs, "orderID", "orderID"));
+
+                    loginPageFrame.dispose();
+                    new OrderPageSelectItem();
+                } else {
+                    JOptionPane.showMessageDialog(LoginPage.this, "Lietotājvārds un/vai parole nepareiza", "Mēģiniet vēlreiz!", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
         // !!!!!!!  Projektam turbojet beigām, šeit jāsasaista ar datubāzi,
@@ -670,7 +675,6 @@ class OrderPage_StoreDocuments extends Component implements ActionListener, Mous
         }
         if(e.getSource().equals(nextBtn)) {
             registerOrderP();
-            new PreviousOrders();
         }
     }
 
@@ -1073,25 +1077,40 @@ class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
 } //End class OrderPage_ArchiveDocuments
 
 class PreviousOrders implements ActionListener, MouseListener {
+    WriteTextToFile wttf= new WriteTextToFile();
     GetTextFromFile gtff= new GetTextFromFile();
     GetLastOrdersInfo gloi= new GetLastOrdersInfo();
     GetOrdersInfo goi= new GetOrdersInfo();
     GetOrderPrice gop= new GetOrderPrice();
     String currentTime, address, time, boxes, elevator, floor, notes, orderType, currentUser, currentOrderID;
 
+    MyTransparentLabel mainLabel= new MyTransparentLabel(65, 100, 770, 500);
     MyFrame previousOrdersFrame= new MyFrame("Document Solutions Previous Orders Page");
-    MyLabel topTextLabel= new MyLabel("*TEST* 23.06.2022 (Glabāšana)", 300, 10, 400, 30, 30);
-    MyLabel addressTextLabel= new MyLabel("*TEST* Adrese: "+"Rīga, Jasmuižas iela 3, 3, LV-1004", 200, 60, 500, 20, 18);
-    MyLabel addressTextLabel2= new MyLabel("", 200, 90, 500, 20, 18);
-    MyLabel timeTextLabel= new MyLabel("*TEST* Darba laiks: "+"09:00- 19:30", 200, 120, 500, 20, 18);
-    MyLabel boxesTextLabel= new MyLabel("*TEST* Kastes: "+"400"+" GB", 200, 150, 500, 20, 18);
-    MyLabel lvlTextLabel= new MyLabel("*TEST* Stāvs: "+"0", 200, 180, 500, 20, 18);
-    MyLabel notesTextLabel= new MyLabel("*TEST* Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 200, 210, 550, 20, 18);
-    MyLabel notesTextLabel2= new MyLabel("", 200, 240, 550, 20, 18);
-    MyLabel notesTextLabel3= new MyLabel("", 200, 280, 550, 20, 18);
-    MyLabel statussTextLabel= new MyLabel("*TEST* Statuss : "+"GAIDA", 200, 320, 500, 20, 18);
-    MyLabel totalTextLabel= new MyLabel("*TEST* Kopā: "+"235,0 Eiro + PVN 21%", 200, 360, 500, 30, 30);
-    MyLabel monthTextLabel= new MyLabel("*TEST* *Mēneša maksa: "+"90,0 Eiro + PVN 21%", 200, 400, 500, 20, 18);
+    MyLabel topTextLabel= new MyLabel("*TEST* 23.06.2022 (Glabāšana)", 300, 10, 400, 30, 20);
+    MyLabel addressTextLabel= new MyLabel("*TEST* Adrese: "+"Rīga, Lienes iela 3, 3, LV-1004", 250, 50, 500, 20, 16);
+    MyLabel addressTextLabel2= new MyLabel("", 250, 70, 500, 20, 16);
+    MyLabel timeTextLabel= new MyLabel("*TEST* Darba laiks: "+"09:00- 19:30", 250, 90, 500, 20, 16);
+    MyLabel boxesTextLabel= new MyLabel("*TEST* Kastes: "+"400"+" GB", 250, 110, 500, 20, 16);
+    MyLabel lvlTextLabel= new MyLabel("*TEST* Stāvs: "+"0", 250, 130, 500, 20, 16);
+    MyLabel notesTextLabel= new MyLabel("*TEST* Piezīmes: "+"Piebtraukt var no Cēsu ielas......", 250, 150, 550, 20, 16);
+    MyLabel notesTextLabel2= new MyLabel("", 250, 170, 550, 20, 16);
+    MyLabel notesTextLabel3= new MyLabel("", 250, 190, 550, 20, 16);
+    MyLabel totalTextLabel= new MyLabel("*TEST* Kopā: "+"235,0 Eiro + PVN 21%", 250, 250, 500, 30, 20);
+    MyLabel monthTextLabel= new MyLabel("*TEST* *Mēneša maksa: "+"90,0 Eiro + PVN 21%", 250, 290, 500, 20, 16);
+    //MyLabel statussTextLabel= new MyLabel();
+
+    MyButton showOrderBtn= new MyButton("Parādīt", 25, 80, 200, 50);
+
+    MyComboBox ordersBox= new MyComboBox("OrderID", 50, 20, 150, 50);
+
+    String orderNr= "", userNr= "", orderFromList= "", addressFromList= "", notesFromList= "",
+            timeFromList= "", boxesFromList= "", elevatorFromList= "", floorFromList= "", dateFromList= "", userID= "";
+    String[] listsArray= new String[] {orderFromList, addressFromList, notesFromList, timeFromList, boxesFromList, elevatorFromList, floorFromList, dateFromList, userID};
+    String[] databaseTitlesArray = new String[] {"OrderID", "address", "notes", "time", "boxes", "elevator", "floor", "date_time", "UserID"};
+    int tableSize= Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt"));
+    ArrayList<ArrayList<String>> outer = new ArrayList<ArrayList<String>>();
+    String ordersArray[] = new String[tableSize]; // glabās visus lietotāja ID
+
     PreviousOrders() {
         currentUser= gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
         currentOrderID= gloi.getLastOrdersInfo(currentUser, "orderID", "orderID");
@@ -1103,6 +1122,11 @@ class PreviousOrders implements ActionListener, MouseListener {
         floor= goi.getOrdersInfo(currentOrderID, "floor");
         notes= goi.getOrdersInfo(currentOrderID, "notes");
         orderType= " (Glabāšana)";
+
+        showOrderBtn.addActionListener(this);
+        ordersBox.addActionListener(this);
+
+        showOrderBtn.setVisible(false);
 
         topTextLabel.setText(currentTime+orderType);
         if(address.length() > 50 && address.length() <= 100) {
@@ -1132,25 +1156,124 @@ class PreviousOrders implements ActionListener, MouseListener {
         totalTextLabel.setText("Kopā: "+gop.getOrderPrice(boxes, floor)+"€ + PVN 21%");
         monthTextLabel.setText("*Mēneša maksa: "+Integer.parseInt(boxes)* 0.6+"€ + PVN 21%");
 
-        previousOrdersFrame.add(monthTextLabel);
-        previousOrdersFrame.add(totalTextLabel);
-        previousOrdersFrame.add(statussTextLabel);
-        previousOrdersFrame.add(notesTextLabel3);
-        previousOrdersFrame.add(notesTextLabel2);
-        previousOrdersFrame.add(notesTextLabel);
-        previousOrdersFrame.add(lvlTextLabel);
-        previousOrdersFrame.add(boxesTextLabel);
-        previousOrdersFrame.add(timeTextLabel);
-        previousOrdersFrame.add(addressTextLabel2);
-        previousOrdersFrame.add(addressTextLabel);
-        previousOrdersFrame.add(topTextLabel);
+        mainLabel.add(showOrderBtn);
+        mainLabel.add(ordersBox);
+        mainLabel.add(monthTextLabel);
+        mainLabel.add(totalTextLabel);
+        //mainLabel.add(statussTextLabel);
+        mainLabel.add(notesTextLabel3);
+        mainLabel.add(notesTextLabel2);
+        mainLabel.add(notesTextLabel);
+        mainLabel.add(lvlTextLabel);
+        mainLabel.add(boxesTextLabel);
+        mainLabel.add(timeTextLabel);
+        mainLabel.add(addressTextLabel2);
+        mainLabel.add(addressTextLabel);
+        mainLabel.add(topTextLabel);
+
+
+        //currentUser
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT OrderId FROM orders WHERE userID="+currentUser+" ORDER BY OrderID");
+            while (resultSet.next()) {
+                ordersBox.addItem(resultSet.getString("OrderID"));
+                ArrayList<String> inner = new ArrayList<String>();
+                inner.add(resultSet.getString("OrderID"));
+                outer.add(inner);
+            }
+            // saliekam visu parastajā Array
+            for(int j =0;j<outer.size();j++){
+                ordersArray[j] = String.valueOf(outer.get(j));
+            }
+            System.out.println(Arrays.toString(ordersArray));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        previousOrdersFrame.add(mainLabel);
         previousOrdersFrame.setLayout(null);
         previousOrdersFrame.setVisible(true);
     } //End PreviousOrders()
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(ordersBox)) {
+            ordersBox.removeItem("OrderID");
+            showOrderBtn.setVisible(true);
 
+            try { // saskaita cik kopā ir klientu ir saglabāti datubāzē
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM users");
+                while (getColumnSize.next()) {
+                    tableSize= Integer.parseInt(getColumnSize.getString("COUNT(*)"));
+                    wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt", String.valueOf(tableSize));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if(e.getSource().equals(showOrderBtn)) {
+            showOrderBtn.setBackground(new Color(141, 210, 93));
+            orderNr= (String) ordersBox.getSelectedItem(); // OrderNr glabā izvēlētā pasūtījuma OrderID
+            System.out.println("OrderID= "+orderNr);
+
+            try { // piepilda listsArray ar vērtībām
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE OrderID="+orderNr);
+                while (resultSet.next()) {
+                    for (int i = 0; i < listsArray.length; i++) {
+                        listsArray[i]= resultSet.getString(databaseTitlesArray[i]);
+                    }
+                    orderFromList= listsArray[0];
+                    addressFromList= listsArray[1];
+                    notesFromList= listsArray[2];
+                    timeFromList= listsArray[3];
+                    boxesFromList= listsArray[4];
+                    elevatorFromList= listsArray[5];
+                    floorFromList= listsArray[6];
+                    dateFromList= listsArray[7];
+                    userID= listsArray[8];
+                    System.out.println(Arrays.toString(listsArray));
+                    topTextLabel.setText("ID= "+userID+" #00"+orderNr+" (Glabāšana) "+dateFromList);
+                    if(addressFromList.length() > 60 && addressFromList.length() <= 120) {
+                        addressTextLabel.setText("Adrese: "+addressFromList.substring(0, 60));
+                        addressTextLabel2.setText("            "+addressFromList.substring(60, addressFromList.length()-1));
+                    } else if(addressFromList.length() <= 60) {
+                        addressTextLabel.setText("Adrese: "+addressFromList);
+                        addressTextLabel2.setText("");
+                    }
+                    timeTextLabel.setText("Darba laiks: "+timeFromList);
+                    boxesTextLabel.setText("Kastes(gb): "+boxesFromList);
+                    if(elevatorFromList.equals("1")) {
+                        lvlTextLabel.setText("Lifts: IR");
+                    } else if(elevatorFromList.equals("0")) {
+                        lvlTextLabel.setText("Stāvs: "+floorFromList+" (Lifta NAV!)");
+                    }
+
+                    if(notesFromList.length() > 60 && notesFromList.length() <= 120) {
+                        notesTextLabel.setText("Piezīmes: "+notesFromList.substring(0, 60));
+                        notesTextLabel2.setText("                "+notesFromList.substring(60, notesFromList.length()-1));
+                        notesTextLabel3.setText("");
+                    } else if(notesFromList.length() > 120) {
+                        notesTextLabel.setText("Piezīmes: "+notesFromList.substring(0, 60));
+                        notesTextLabel2.setText("                "+notesFromList.substring(60, 120));
+                        notesTextLabel3.setText("                "+notesFromList.substring(120, notesFromList.length()-1));
+                    } else if(notesFromList.length() <= 60){
+                        notesTextLabel.setText("Piezīmes: "+notesFromList);
+                        notesTextLabel2.setText("");
+                        notesTextLabel3.setText("");
+                    }
+                    totalTextLabel.setText("Kopā: "+gop.getOrderPrice(boxesFromList, floorFromList)+"€ + PVN 21%");
+                    monthTextLabel.setText("*Mēneša maksa: "+Integer.parseInt(boxesFromList)* 0.6+"€ + PVN 21%");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -1180,6 +1303,7 @@ class PreviousOrders implements ActionListener, MouseListener {
 } //End class PreviousOrders
 
 class AdministratorPage implements ActionListener {
+    UpdateDatabase ud= new UpdateDatabase();
     WriteTextToFile wttf= new WriteTextToFile();
     GetTextFromFile gtff= new GetTextFromFile();
     GetOrderPrice gop= new GetOrderPrice();
@@ -1202,10 +1326,16 @@ class AdministratorPage implements ActionListener {
     MyComboBox usersBox= new MyComboBox("UserID", 50, 20, 150, 50);
     MyComboBox ordersBox= new MyComboBox("OrderID", 50, 145, 150, 50);
 
-    MyButton setUserBtn= new MyButton("ORDERS", 25, 80, 200, 50);
-    MyButton showOrderBtn= new MyButton("SHOW", 25, 205, 200, 50);
+    MyButton setUserBtn= new MyButton("Pieteikumi", 25, 80, 200, 50);
+    MyButton showOrderBtn= new MyButton("Parādīt", 25, 205, 200, 50);
+    MyButton acceptBtn= new MyButton("Apstiprināt", 25, 305, 200, 50);
+    MyButton declineBtn= new MyButton("Atteikt", 25, 405, 200, 50);
+    MyButton sendBtn= new MyButton("Sūtīt", 545, 405, 200, 50);
+
+    MyTextArea noteTxt = new MyTextArea(245, 355, 280, 100);
 
 
+    boolean statuss= true;
     String orderNr= "", userNr= "", orderFromList= "", addressFromList= "", notesFromList= "",
             timeFromList= "", boxesFromList= "", elevatorFromList= "", floorFromList= "", dateFromList= "", userID= "";
 
@@ -1214,17 +1344,32 @@ class AdministratorPage implements ActionListener {
     int tableSize= Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt"));
     ArrayList<ArrayList<String>> outer = new ArrayList<ArrayList<String>>();
     String ordersArray[] = new String[tableSize]; // glabās visus lietotāja ID
-    AdministratorPage() {
 
+    AdministratorPage() {
+        sendBtn.addActionListener(this);
+        declineBtn.addActionListener(this);
+        acceptBtn.addActionListener(this);
         showOrderBtn.addActionListener(this);
         setUserBtn.addActionListener(this);
         ordersBox.addActionListener(this);
         usersBox.addActionListener(this);
+
         ordersBox.setVisible(false);
         showOrderBtn.setVisible(false);
         setUserBtn.setVisible(false);
+        acceptBtn.setVisible(false);
+        declineBtn.setVisible(false);
+        sendBtn.setVisible(false);
+        noteTxt.setVisible(false);
+
+        declineBtn.setBackground(new Color(173, 61, 61)); //(new Color(147, 32, 32));
+
+        mainLabel.add(noteTxt);
         mainLabel.add(ordersBox);
         mainLabel.add(usersBox);
+        mainLabel.add(sendBtn);
+        mainLabel.add(declineBtn);
+        mainLabel.add(acceptBtn);
         mainLabel.add(setUserBtn);
         mainLabel.add(showOrderBtn);
         mainLabel.add(topTextLabel);
@@ -1239,6 +1384,7 @@ class AdministratorPage implements ActionListener {
         mainLabel.add(totalTextLabel);
         mainLabel.add(monthTextLabel);
 
+        // no datu bāzes izņem visus lietotāja ID un ievieto Array
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
             Statement statement = connection.createStatement();
@@ -1284,6 +1430,12 @@ class AdministratorPage implements ActionListener {
         }
 
         if(e.getSource().equals(setUserBtn)) { // uzspiežot ORDERS pogu...
+            setUserBtn.setBackground(new Color(141, 210, 93));
+            showOrderBtn.setBackground(new Color(184, 229, 154));
+            acceptBtn.setVisible(false);
+            declineBtn.setVisible(false);
+            noteTxt.setVisible(false);
+            sendBtn.setVisible(false);
             userNr= (String) usersBox.getSelectedItem(); // userNr glabā izvēlētā lietotāja UserID
             System.out.println("ID= "+userNr);
 
@@ -1308,7 +1460,38 @@ class AdministratorPage implements ActionListener {
             showOrderBtn.setVisible(true);
 
         }
+
+        if(e.getSource().equals(ordersBox)) {
+            ordersBox.removeItem("OrderID");
+            /*try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT orderId FROM orders ORDER BY orderID");
+                while (resultSet.next()) {
+                    ordersBox.addItem(resultSet.getString("orderID"));
+                    if(resultSet.getString("orderID").length() == 1) {
+                        ordersBox.addItem("# = 00" + resultSet.getString("orderID"));
+                    } else if(resultSet.getString("orderID").length() == 2) {
+                        ordersBox.addItem("# = 0" + resultSet.getString("orderID"));
+                    } else if(resultSet.getString("orderID").length() == 3) {
+                        ordersBox.addItem("# = " + resultSet.getString("orderID"));
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }*/
+        }
+
         if(e.getSource().equals(showOrderBtn)) { //uzspieržot SHOW pogu...
+            showOrderBtn.setBackground(new Color(141, 210, 93));
+            setUserBtn.setBackground(new Color(184, 229, 154));
+            acceptBtn.setBackground(new Color(184, 229, 154));
+            declineBtn.setBackground(new Color(173, 61, 61));
+            acceptBtn.setVisible(true);
+            declineBtn.setVisible(true);
+            noteTxt.setVisible(false);
+            sendBtn.setVisible(false);
+
             orderNr= (String) ordersBox.getSelectedItem(); // orderNr glabā izvēlētā lietotāja OrderID
             System.out.println("#"+orderNr);
 
@@ -1366,25 +1549,40 @@ class AdministratorPage implements ActionListener {
                 ex.printStackTrace();
             }
         }
-        if(e.getSource().equals(ordersBox)) {
-            ordersBox.removeItem("OrderID");
-            /*try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT orderId FROM orders ORDER BY orderID");
-                while (resultSet.next()) {
-                    ordersBox.addItem(resultSet.getString("orderID"));
-                    *//*if(resultSet.getString("orderID").length() == 1) {
-                        ordersBox.addItem("# = 00" + resultSet.getString("orderID"));
-                    } else if(resultSet.getString("orderID").length() == 2) {
-                        ordersBox.addItem("# = 0" + resultSet.getString("orderID"));
-                    } else if(resultSet.getString("orderID").length() == 3) {
-                        ordersBox.addItem("# = " + resultSet.getString("orderID"));
-                    }*//*
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }*/
+
+        if(e.getSource().equals(acceptBtn)) {
+            statuss= true;
+            acceptBtn.setBackground(new Color(141, 210, 93));
+            setUserBtn.setBackground(new Color(184, 229, 154));
+            declineBtn.setBackground(new Color(173, 61, 61));
+            showOrderBtn.setBackground(new Color(184, 229, 154));
+            acceptBtn.setVisible(true);
+            noteTxt.setVisible(true);
+            sendBtn.setVisible(true);
+        }
+
+        if(e.getSource().equals(declineBtn)) {
+            statuss= false;
+            declineBtn.setBackground(new Color(147, 32, 32));
+            setUserBtn.setBackground(new Color(184, 229, 154));
+            showOrderBtn.setBackground(new Color(184, 229, 154));
+            acceptBtn.setBackground(new Color(184, 229, 154));
+            noteTxt.setVisible(true);
+            sendBtn.setVisible(true);
+
+        }
+
+        if(e.getSource().equals(sendBtn)) {
+            ud.updateDatabase(orderNr, noteTxt.getText(), statuss);
+            declineBtn.setBackground(new Color(147, 32, 32));
+            setUserBtn.setBackground(new Color(184, 229, 154));
+            showOrderBtn.setBackground(new Color(184, 229, 154));
+            acceptBtn.setBackground(new Color(184, 229, 154));
+            noteTxt.setVisible(false);
+            sendBtn.setVisible(false);
+            acceptBtn.setVisible(false);
+            declineBtn.setVisible(false);
+
         }
     }
 }
