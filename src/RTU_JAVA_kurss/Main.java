@@ -1,7 +1,8 @@
 package RTU_JAVA_kurss;
 
+import RTU_JAVA_kurss.Project.MainPage;
+
 public class Main {
-    public int userID;
     public static void main(String[] args) {
 
         new MainPage();
