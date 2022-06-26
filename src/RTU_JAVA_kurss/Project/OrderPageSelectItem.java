@@ -3,18 +3,24 @@ package RTU_JAVA_kurss.Project;
 import RTU_JAVA_kurss.Extensions.MyFrame;
 import RTU_JAVA_kurss.Extensions.MyTransparentLabel;
 import RTU_JAVA_kurss.Extensions.MyTransparentTextLabel;
-import RTU_JAVA_kurss.Project.OrderPage_ArchiveDocuments;
-import RTU_JAVA_kurss.Project.OrderPage_ShreddingDocuments;
-import RTU_JAVA_kurss.Project.OrderPage_StoreDocuments;
-import RTU_JAVA_kurss.Project.PreviousOrders;
+import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetOrdersCountFromUser;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class OrderPageSelectItem implements ActionListener, MouseListener {
+    GetOrdersCountFromUser goc= new GetOrdersCountFromUser();
+    WriteTextToFile wttf= new WriteTextToFile();
+    GetTextFromFile gtff= new GetTextFromFile();
     MyFrame orderPageFrame = new MyFrame("Document Solutions Order Page");
     MyTransparentLabel sideLabel1 = new MyTransparentLabel(65, 100, 365, 500);
     MyTransparentLabel sideLabel2 = new MyTransparentLabel(480, 100, 350, 500);
@@ -27,7 +33,16 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
     MyTransparentTextLabel middleSideTextLabel = new MyTransparentTextLabel("Smalcināšana / iznīcināšana", 10, 20, 240, 100);
     MyTransparentTextLabel rightSideTextLabel = new MyTransparentTextLabel("Arhīva sakārtošana", 40, 20, 240, 100);
 
-    OrderPageSelectItem() {
+    String currentUser= "", ordersSum= "";
+
+    public OrderPageSelectItem() {
+        currentUser = gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
+        ordersSum= goc.getOrdersCountFromUser(currentUser);
+        wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt", ordersSum);
+        System.out.println(ordersSum);
+
+        sideLabel2.setVisible(!ordersSum.equals("0"));
+
         sideLabel2.add(previousOrdersTextLabel);
         sideLabel1.add(servicesTextLabel);
         leftSideLabel.add(leftSideTextLabel);
@@ -78,6 +93,19 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
             }
         }
         if (e.getSource().equals(sideLabel2)) {
+
+            try { // saskaita cik kopā ir, konkrētam klientam pasūtījumu saglabāti datubāzē un iegūto skaitu saglabā text datnē
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Statement statement = connection.createStatement();
+                ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM orders WHERE UserID="+currentUser);
+                while (getColumnSize.next()) {
+                    int orderTableSize = Integer.parseInt(getColumnSize.getString("COUNT(*)"));
+                    wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt", String.valueOf(orderTableSize));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
             orderPageFrame.dispose();
             new PreviousOrders();
         }

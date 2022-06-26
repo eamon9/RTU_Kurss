@@ -1,4 +1,4 @@
-package RTU_JAVA_kurss.YouNeedThis;
+package RTU_JAVA_kurss.YouNeedThis.TxtFileConnection;
 
 import java.io.File;
 import java.io.FileWriter;

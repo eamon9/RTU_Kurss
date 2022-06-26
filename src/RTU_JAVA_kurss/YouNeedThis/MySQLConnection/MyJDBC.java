@@ -1,4 +1,4 @@
-package RTU_JAVA_kurss;
+package RTU_JAVA_kurss.YouNeedThis.MySQLConnection;
 
 import java.sql.*;
 
@@ -20,7 +20,7 @@ public class MyJDBC {
             e.printStackTrace();
         }*/
 
-        try {
+        /*try {
 
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
 
@@ -39,6 +39,25 @@ public class MyJDBC {
                 //System.out.println(resultSet.getString("floor"));
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT accept FROM orders WHERE orderID="+8);
+            while (resultSet.next()) {
+                String statuss= resultSet.getString("accept");
+                if(statuss== null || statuss.length()== 0) {
+                    statuss= "Gaida";
+                    System.out.println(statuss);
+                } else{
+                    statuss = resultSet.getString("accept");
+                    System.out.println(statuss);
+                }
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

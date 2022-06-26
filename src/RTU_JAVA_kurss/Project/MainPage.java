@@ -15,7 +15,7 @@ public class MainPage implements ActionListener {
     JLabel titleLabel= new JLabel("Document Solutions");
     MyLabel subTitleLabel1 = new MyLabel("Mēs GLABĀJAM", 250, 270, 250, 50, 20);
     MyLabel subTitleLabel2 = new MyLabel("SMALCINĀM,", 400, 290, 250, 50, 20);
-    MyLabel subTitleLabel3 = new MyLabel("IZNĪCINĀM.", 520, 310, 250, 50, 20);
+    MyLabel subTitleLabel3 = new MyLabel("IZNĪCINĀM", 520, 310, 250, 50, 20);
     MyButton startBtn= new MyButton("Sākt", 350, 450, 200, 50);
 
     public MainPage() {

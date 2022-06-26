@@ -48,7 +48,7 @@ public class OrderPage_ShreddingDocuments implements ActionListener, MouseListen
     MyButton nextBtn = new MyButton("Iesniegt", 20, 100, 200, 50);
 
 
-    OrderPage_ShreddingDocuments() {
+    public OrderPage_ShreddingDocuments() {
         // components ################################################### #1
         boxTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
         boxTextArea.setForeground(Color.GRAY);

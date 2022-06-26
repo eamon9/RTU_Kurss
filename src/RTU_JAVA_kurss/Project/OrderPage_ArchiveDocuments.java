@@ -37,7 +37,7 @@ public class OrderPage_ArchiveDocuments implements ActionListener, MouseListener
     // components #6
     MyButton nextBtn = new MyButton("Iesniegt", 20, 100, 200, 50);
 
-    OrderPage_ArchiveDocuments() {
+    public OrderPage_ArchiveDocuments() {
 
         // components ################################################### #1
         boxTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");

@@ -3,7 +3,8 @@ package RTU_JAVA_kurss.Project;
 import RTU_JAVA_kurss.Extensions.*;
 import RTU_JAVA_kurss.OrderG;
 import RTU_JAVA_kurss.YouNeedThis.GetCurrentTime;
-import RTU_JAVA_kurss.YouNeedThis.GetTextFromFile;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +15,9 @@ import java.awt.event.MouseListener;
 import java.sql.*;
 
 public class OrderPage_StoreDocuments extends Component implements ActionListener, MouseListener {
+    GetTextFromFile gtff= new GetTextFromFile();
+    WriteTextToFile wttf= new WriteTextToFile();
     GetCurrentTime gct = new GetCurrentTime();
-    GetTextFromFile gtff = new GetTextFromFile();
     String elevatorIs = "1"; // apzīmē vai ir lifts(0- nav lifta, 1- ir lifts)
     String floorA = "0";
     String currentTime = gct.getCurrentTime();
@@ -60,7 +62,7 @@ public class OrderPage_StoreDocuments extends Component implements ActionListene
     // components #6
     MyButton nextBtn = new MyButton("Iesniegt", 20, 100, 200, 50);
 
-    OrderPage_StoreDocuments() {
+    public OrderPage_StoreDocuments() {
         System.out.println("UserIDs: ID" + user_ID + "#001S");
         // components ################################################### #1
         addressTextArea.setText("Pilsēta,\nIela,\nkorpuss, dz.nr.,\nPasta indeks");
@@ -225,12 +227,14 @@ public class OrderPage_StoreDocuments extends Component implements ActionListene
         System.out.println("Stāvi: " + floor + " vs StāviA: " + floorA + " vs Stāvi.getText(): " + floorTextF.getText());
         if (orderG != null) {
             storeDocumentsFrame.dispose();
-            new PreviousOrders();
-            System.out.println("Adr: " + address + "|| Notes: " + notes + "|| WorkingTime: " + time + "|| Boxes: " + boxes + "|| Lifts: " + elevator + "|| Stāvs:  " + floor + "|| ID: " + userID + "|| Time: " + currentTime);
+            int tempOrderTableSize= Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt"));
+            int updatedOrderTableSize= tempOrderTableSize+1;
+            wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt", String.valueOf(updatedOrderTableSize));
+            PreviousOrders previousOrders= new PreviousOrders();
+            //System.out.println("Adr: " + address + "|| Notes: " + notes + "|| WorkingTime: " + time + "|| Boxes: " + boxes + "|| Lifts: " + elevator + "|| Stāvs:  " + floor + "|| ID: " + userID + "|| Time: " + currentTime);
 
         } else {
             System.out.println(orderG);
-            System.out.println("Adr: " + address + "|| Notes: " + notes + "|| WorkingTime: " + time + "|| Boxes: " + boxes + "|| Lifts: " + elevator + "|| Stāvs:  " + floor + "|| ID: " + userID + "|| Time: " + currentTime);
             JOptionPane.showMessageDialog(this, "Neizdevās izveidot pasūtījumu", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
         }
     }

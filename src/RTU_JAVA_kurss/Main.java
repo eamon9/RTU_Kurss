@@ -1,6 +1,6 @@
 package RTU_JAVA_kurss;
 
-import RTU_JAVA_kurss.Project.MainPage;
+import RTU_JAVA_kurss.Project.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,6 +15,6 @@ public class Main {
         //new OrderPage_ArchiveDocuments();
 
         //new PreviousOrders();
-        ///new AdministratorPage();
+        //new AdministratorPage();
     }
 }

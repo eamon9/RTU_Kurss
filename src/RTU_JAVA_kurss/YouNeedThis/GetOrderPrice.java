@@ -4,13 +4,15 @@ public class GetOrderPrice {
     public double getOrderPrice(String boxes, String floor) {
         double orderPrice, orderBoxPrise = 1.00;
         int orderBoxes = Integer.parseInt(boxes), orderFloor = Integer.parseInt(floor);
-        if (orderBoxes >= 100 && orderBoxes < 300) {
+        if(orderBoxes < 100) {
+
+        } else if (orderBoxes < 300) {
             orderBoxPrise = 0.90;
-        } else if (orderBoxes >= 300 && orderBoxes < 500) {
+        } else if (orderBoxes < 500) {
             orderBoxPrise = 0.80;
-        } else if (orderBoxes >= 500 && orderBoxes < 1000) {
+        } else if (orderBoxes < 1000) {
             orderBoxPrise = 0.70;
-        } else if (orderBoxes >= 1000 && orderBoxes < 10000) {
+        } else if (orderBoxes < 10000) {
             orderBoxPrise = 0.60;
         } else if (orderBoxes >= 10000) {
             orderBoxPrise = 0.50;

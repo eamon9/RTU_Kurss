@@ -2,8 +2,8 @@ package RTU_JAVA_kurss.Project;
 
 import RTU_JAVA_kurss.Extensions.*;
 import RTU_JAVA_kurss.User;
-import RTU_JAVA_kurss.YouNeedThis.GetTextFromFile;
-import RTU_JAVA_kurss.YouNeedThis.WriteTextToFile;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +56,7 @@ public class RegistrationPage extends Component implements ActionListener {
     MyTextField[] juridicalTF = new MyTextField[]{companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
 
 
-    RegistrationPage() {
+    public RegistrationPage() {
         personGroup = new ButtonGroup(); // grupēšana nepieciešama, lai varētu atzīmēt tikai vienu no izvēlētajiem variantiem
         personGroup.add(individualRadioBtn);
         personGroup.add(juridicalRadioBtn);

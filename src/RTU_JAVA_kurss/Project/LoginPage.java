@@ -1,11 +1,10 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.*;
 import RTU_JAVA_kurss.Extensions.*;
-import RTU_JAVA_kurss.YouNeedThis.GetLastOrdersInfo;
-import RTU_JAVA_kurss.YouNeedThis.GetTextFromFile;
-import RTU_JAVA_kurss.YouNeedThis.GetUserInfo;
-import RTU_JAVA_kurss.YouNeedThis.WriteTextToFile;
+import RTU_JAVA_kurss.User;
+import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUserInfo;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
+import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,6 @@ public class LoginPage extends Component implements ActionListener, MouseListene
     WriteTextToFile wttf = new WriteTextToFile();
     GetTextFromFile gtff = new GetTextFromFile();
     GetUserInfo gui = new GetUserInfo();
-    GetLastOrdersInfo gloi = new GetLastOrdersInfo();
     MyFrame loginPageFrame = new MyFrame("Document Solutions Login Page");
     MyTransparentTextLabel registeredUserLabel = new MyTransparentTextLabel("Esmu reģistrēts lietotājs", 85, 60, 250, 50);
     MyTransparentTextLabel notRegisteredUserLabel = new MyTransparentTextLabel("Jums nav lietotāja profila?", 75, 60, 250, 50);
@@ -35,8 +33,10 @@ public class LoginPage extends Component implements ActionListener, MouseListene
     MyButton registrationBtn = new MyButton("Reģistrēties", 80, 140, 200, 50);
     JTextField textField = new JTextField(); // ??
 
-    LoginPage() {
-        //Reģistrēta lietoytāja komponentes
+
+
+    public LoginPage() {
+        //Reģistrēta lietotāja komponentes
         mailTextField.addMouseListener(this);
         loginBtn.addActionListener(this);
         registrationBtn.addActionListener(this);
@@ -71,6 +71,9 @@ public class LoginPage extends Component implements ActionListener, MouseListene
             if (mail.equals("info@documentsolutions.lv") && password.equals("administrator")) {
                 loginPageFrame.dispose();
                 new AdministratorPage();
+            } else if(mail.equals("admin") && password.equals("admin")){
+                loginPageFrame.dispose();
+                new AdministratorPage();
             } else {
 
                 user = getAuthenticUser(mail, password);
@@ -93,10 +96,11 @@ public class LoginPage extends Component implements ActionListener, MouseListene
                     //kā pirmo parametru vadot (kurā sarakstā jāmeklē, piem. esošā userId),
                     //otro elementu (pēc kā sortējam, piem. orderID, jo viņi neatkārtojas un iet pēc kārtas),
                     //trešo elementu (ko izvadīt konsolē, piem. orderID)
-                    System.out.println("Pēdējā pasūtījuma ID: " + gloi.getLastOrdersInfo(userIDs, "orderID", "orderID"));
+                    //System.out.println("Pēdējā pasūtījuma ID: " + gloi.getLastOrdersInfo(userIDs, "orderID", "orderID"));
 
                     loginPageFrame.dispose();
                     new OrderPageSelectItem();
+
                 } else {
                     JOptionPane.showMessageDialog(LoginPage.this, "Lietotājvārds un/vai parole nepareiza", "Mēģiniet vēlreiz!", JOptionPane.ERROR_MESSAGE);
                 }
