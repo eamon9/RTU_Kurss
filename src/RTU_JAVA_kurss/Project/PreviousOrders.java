@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PreviousOrders implements ActionListener, MouseListener {
+    GetMonthPrise gmp= new GetMonthPrise();
     GetColumnsTextFromOrder gct = new GetColumnsTextFromOrder();
     GetLastOrdersInfo gloi = new GetLastOrdersInfo();
     WriteTextToFile wttf = new WriteTextToFile();
@@ -112,7 +113,7 @@ public class PreviousOrders implements ActionListener, MouseListener {
             notesTextLabel.setText("Piezīmes: " + notes);
         }
         totalPaymentTextLabel.setText("Kopā: " + gop.getOrderPrice(boxes, floor) + "€ + PVN 21%");
-        monthlyPaymentTextLabel.setText("*Mēneša maksa: " + Integer.parseInt(boxes) * 0.6 + "€ + PVN 21%");
+        monthlyPaymentTextLabel.setText("*Mēneša maksa: " + gmp.getMonthPrise(boxes) + "€ + PVN 21%");
         statussTextLabel.setText("Statuss: ");
 
         mainLabel.add(statussTextLabel);
@@ -236,7 +237,7 @@ public class PreviousOrders implements ActionListener, MouseListener {
                         notesTextLabel3.setText("");
                     }
                     totalPaymentTextLabel.setText("Kopā: " + gop.getOrderPrice(boxesFromList, floorFromList) + "€ + PVN 21%");
-                    monthlyPaymentTextLabel.setText("*Mēneša maksa: " + Integer.parseInt(boxesFromList) * 0.6 + "€ + PVN 21%");
+                    monthlyPaymentTextLabel.setText("*Mēneša maksa: " + gmp.getMonthPrise(boxes) + "€ + PVN 21%");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

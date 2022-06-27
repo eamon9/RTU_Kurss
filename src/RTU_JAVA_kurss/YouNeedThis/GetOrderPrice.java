@@ -1,7 +1,10 @@
 package RTU_JAVA_kurss.YouNeedThis;
 
+import java.text.DecimalFormat;
+
 public class GetOrderPrice {
-    public double getOrderPrice(String boxes, String floor) {
+    public String getOrderPrice(String boxes, String floor) {
+        DecimalFormat dc = new DecimalFormat("0.00");
         double orderPrice, orderBoxPrise = 1.00;
         int orderBoxes = Integer.parseInt(boxes), orderFloor = Integer.parseInt(floor);
         if(orderBoxes < 100) {
@@ -23,11 +26,11 @@ public class GetOrderPrice {
         if (orderFloor < 1) {
             orderPrice = (orderBoxes * orderBoxPrise) + ((int)orderBoxes / 30) * 15;
         } else {
-            orderPrice = (orderBoxes * orderBoxPrise) + (((int)orderBoxes / 30) * orderFloor) * 15;
+            orderPrice = (orderBoxes * orderBoxPrise) + (((int)orderBoxes / 30) * 15) * orderFloor;
         }
         if (orderBoxes < 30) {
             orderPrice += 7;
         }
-        return orderPrice;
+        return dc.format(orderPrice);
     }
 }
