@@ -2,6 +2,7 @@ package RTU_JAVA_kurss.Project;
 
 import RTU_JAVA_kurss.Extensions.*;
 import RTU_JAVA_kurss.User;
+import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUsersCount;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
@@ -14,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegistrationPage extends Component implements ActionListener {
+    GetUsersCount guc= new GetUsersCount();
     GetTextFromFile gtff = new GetTextFromFile();
     WriteTextToFile wttf = new WriteTextToFile();
 
@@ -193,6 +195,7 @@ public class RegistrationPage extends Component implements ActionListener {
             loginPage.mailTextField.setEditable(true);
             loginPage.fakePasswordField.setVisible(false);
             loginPage.passwordField.setVisible(true);
+            wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt", guc.getUsersCount());
 
         } else {
             JOptionPane.showMessageDialog(this, "Neizdevās izveidot jaunu lietotāju", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);

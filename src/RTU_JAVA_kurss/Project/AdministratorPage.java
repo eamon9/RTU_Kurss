@@ -4,11 +4,11 @@ import RTU_JAVA_kurss.Extensions.*;
 import RTU_JAVA_kurss.YouNeedThis.GetMonthPrise;
 import RTU_JAVA_kurss.YouNeedThis.GetOrderPrice;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetColumnsTextFromOrder;
+import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUsersCount;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.UpdateDatabase;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AdministratorPage implements ActionListener {
-    JScrollPane scrollPane1;
-    JScrollPane scrollPane2;
+    GetUsersCount guc=new GetUsersCount();
     GetMonthPrise gmp= new GetMonthPrise();
     GetColumnsTextFromOrder gcto = new GetColumnsTextFromOrder();
     UpdateDatabase ud = new UpdateDatabase();
@@ -30,20 +29,14 @@ public class AdministratorPage implements ActionListener {
     GetOrderPrice gop = new GetOrderPrice();
 
     MyLabel topTextLabel = new MyLabel("", 300, 10, 400, 30, 20);
-    MyTextArea addressTextArea= new MyTextArea(250, 50, 500, 40);
-    //MyLabel addressTextLabel = new MyLabel("Adrese: ", 250, 50, 500, 20, 16);
-    //MyLabel addressTextLabel2 = new MyLabel("", 250, 70, 500, 20, 16);
-    MyLabel timeTextLabel = new MyLabel("Darba laiks: ", 250, 90, 500, 20, 16);
-    MyLabel boxesTextLabel = new MyLabel("Kastes: ", 250, 110, 500, 20, 16);
-    MyLabel lvlTextLabel = new MyLabel("Stāvs: ", 250, 130, 500, 20, 16);
-    MyTextArea notesTextArea= new MyTextArea(250, 150, 500, 60);
-    //MyLabel notesTextLabel = new MyLabel("Piezīmes: ", 250, 150, 550, 20, 16);
-    //MyLabel notesTextLabel2 = new MyLabel("", 250, 170, 550, 20, 16);
-    //MyLabel notesTextLabel3 = new MyLabel("", 250, 190, 550, 20, 16);
+    MyTextArea addressTextArea= new MyTextArea(530, 40, 220, 150);
+    MyLabel timeTextLabel = new MyLabel("Darba laiks: ", 250, 40, 500, 20, 16);
+    MyLabel boxesTextLabel = new MyLabel("Kastes: ", 250, 60, 500, 20, 16);
+    MyLabel lvlTextLabel = new MyLabel("Stāvs: ", 250, 80, 500, 20, 16);
+    MyTextArea notesTextArea= new MyTextArea(530, 200, 220, 150);
     MyLabel totalTextLabel = new MyLabel("Kopā: ", 250, 250, 500, 30, 20);
     MyLabel monthTextLabel = new MyLabel("*Mēneša maksa: ", 250, 290, 500, 20, 16);
     MyLabel statussTextLabel = new MyLabel("Statuss: ", 250, 310, 500, 20, 16);
-
 
     MyFrame adminPageFrame = new MyFrame("Administrator Page");
     MyTransparentLabel mainLabel = new MyTransparentLabel(65, 100, 770, 500);
@@ -61,19 +54,18 @@ public class AdministratorPage implements ActionListener {
     MyTextArea noteTxtAreaFromDB = new MyTextArea(245, 355, 280, 100);
 
 
-    boolean statuss = true;
+    boolean statuss;
     String orderNr = "", userNr = "", orderFromList = "", addressFromList = "", notesFromList = "", statussFromDB = "", noteFromDB = "",
             timeFromList = "", boxesFromList = "", elevatorFromList = "", floorFromList = "", dateFromList = "", userID = "", addressText= "Adrese: ", notesText= "Piezīmes: ";
 
     String[] listsArray = new String[]{orderFromList, addressFromList, notesFromList, timeFromList, boxesFromList, elevatorFromList, floorFromList, dateFromList, userID};
     String[] databaseTitlesArray = new String[]{"OrderID", "address", "notes", "time", "boxes", "elevator", "floor", "date_time", "UserID"};
-    int tableSize = Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/userTableSize.txt"));
+    int tableSize = Integer.parseInt(guc.getUsersCount());
+
     ArrayList<ArrayList<String>> outer = new ArrayList<>();
     String[] ordersArray = new String[tableSize]; // glabās visus lietotāja ID
 
     public AdministratorPage() {
-        scrollPane1= new JScrollPane(addressTextArea);
-        scrollPane2= new JScrollPane(notesTextArea);
         sendBtn.addActionListener(this);
         declineBtn.addActionListener(this);
         acceptBtn.addActionListener(this);
@@ -95,11 +87,13 @@ public class AdministratorPage implements ActionListener {
         addressTextArea.setEditable(false);
         addressTextArea.setText(addressText);
         addressTextArea.setForeground(new Color(7, 105, 64, 190));
-        //addressTextArea.setBackground(new Color(46, 149, 169, 255));
+        addressTextArea.setBackground(new Color(46, 149, 169, 255));
+        addressTextArea.setFont(new Font("Times New Roman", Font.BOLD, 16));
         notesTextArea.setEditable(false);
         notesTextArea.setText(notesText);
         notesTextArea.setForeground(new Color(7, 105, 64, 190));
-        //notesTextArea.setBackground(new Color(46, 149, 169, 255));
+        notesTextArea.setBackground(new Color(46, 149, 169, 255));
+        notesTextArea.setFont(new Font("Times New Roman", Font.BOLD, 16));
 
         declineBtn.setBackground(new Color(173, 61, 61)); //(new Color(147, 32, 32));
 
@@ -115,17 +109,10 @@ public class AdministratorPage implements ActionListener {
         mainLabel.add(showOrderBtn);
         mainLabel.add(topTextLabel);
         mainLabel.add(addressTextArea);
-        mainLabel.add(scrollPane1);
-        mainLabel.add(scrollPane2);
-        //mainLabel.add(addressTextLabel);
-        //mainLabel.add(addressTextLabel2);
         mainLabel.add(timeTextLabel);
         mainLabel.add(boxesTextLabel);
         mainLabel.add(lvlTextLabel);
         mainLabel.add(notesTextArea);
-        //mainLabel.add(notesTextLabel);
-        //mainLabel.add(notesTextLabel2);
-        //mainLabel.add(notesTextLabel3);
         mainLabel.add(totalTextLabel);
         mainLabel.add(monthTextLabel);
 
@@ -212,23 +199,6 @@ public class AdministratorPage implements ActionListener {
 
         if (e.getSource().equals(ordersBox)) {
             ordersBox.removeItem("OrderID");
-                /*try {
-                    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
-                    Statement statement = connection.createStatement();
-                    ResultSet resultSet = statement.executeQuery("SELECT orderId FROM orders ORDER BY orderID");
-                    while (resultSet.next()) {
-                        ordersBox.addItem(resultSet.getString("orderID"));
-                        if(resultSet.getString("orderID").length() == 1) {
-                            ordersBox.addItem("# = 00" + resultSet.getString("orderID"));
-                        } else if(resultSet.getString("orderID").length() == 2) {
-                            ordersBox.addItem("# = 0" + resultSet.getString("orderID"));
-                        } else if(resultSet.getString("orderID").length() == 3) {
-                            ordersBox.addItem("# = " + resultSet.getString("orderID"));
-                        }
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }*/
         }
 
         if (e.getSource().equals(showOrderBtn)) { //uzspieržot SHOW pogu...
@@ -263,15 +233,7 @@ public class AdministratorPage implements ActionListener {
                     floorFromList = listsArray[6];
                     dateFromList = listsArray[7];
                     userID = listsArray[8];
-                    System.out.println(Arrays.toString(listsArray));
                     topTextLabel.setText("ID= " + userID + " #00" + orderNr + " (Glabāšana) " + dateFromList);
-                    /*if (addressFromList.length() > 60 && addressFromList.length() <= 120) {
-                        addressTextLabel.setText("Adrese: " + addressFromList.substring(0, 60));
-                        addressTextLabel2.setText("            " + addressFromList.substring(60, addressFromList.length() - 1));
-                    } else if (addressFromList.length() <= 60) {
-                        addressTextLabel.setText("Adrese: " + addressFromList);
-                        addressTextLabel2.setText("");
-                    }*/
                     addressTextArea.setText(addressText+addressFromList);
                     timeTextLabel.setText("Darba laiks: " + timeFromList);
                     boxesTextLabel.setText("Kastes(gb): " + boxesFromList);
@@ -282,20 +244,6 @@ public class AdministratorPage implements ActionListener {
                     }
 
                     notesTextArea.setText(notesText+notesFromList);
-
-                    /*if (notesFromList.length() > 60 && notesFromList.length() <= 120) {
-                        notesTextLabel.setText("Piezīmes: " + notesFromList.substring(0, 60));
-                        notesTextLabel2.setText("                " + notesFromList.substring(60, notesFromList.length() - 1));
-                        notesTextLabel3.setText("");
-                    } else if (notesFromList.length() > 120) {
-                        notesTextLabel.setText("Piezīmes: " + notesFromList.substring(0, 60));
-                        notesTextLabel2.setText("                " + notesFromList.substring(60, 120));
-                        notesTextLabel3.setText("                " + notesFromList.substring(120, notesFromList.length() - 1));
-                    } else if (notesFromList.length() <= 60) {
-                        notesTextLabel.setText("Piezīmes: " + notesFromList);
-                        notesTextLabel2.setText("");
-                        notesTextLabel3.setText("");
-                    }*/
                     totalTextLabel.setText("Kopā: " + gop.getOrderPrice(boxesFromList, floorFromList) + "€ + PVN 21%");
                     monthTextLabel.setText("*Mēneša maksa: " + gmp.getMonthPrise(boxesFromList)+ "€ + PVN 21%");
                 }
@@ -315,7 +263,6 @@ public class AdministratorPage implements ActionListener {
                 statussTextLabel.setText("Statuss: " + statussFromDB);
             } else if (statussFromDB.equals("Akceptēts!")) {
                 noteTxtAreaFromDB.setVisible(true);
-                //nomainīt krāsu uz default zaļo kur visi texti ir
                 noteTxtAreaFromDB.setForeground(new Color(7, 105, 64, 190));
                 statussTextLabel.setForeground(new Color(7, 105, 64, 190));
                 noteTxtAreaFromDB.setText(noteFromDB);

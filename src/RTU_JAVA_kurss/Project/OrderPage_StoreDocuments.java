@@ -61,6 +61,7 @@ public class OrderPage_StoreDocuments extends Component implements ActionListene
 
     // components #6
     MyButton nextBtn = new MyButton("Iesniegt", 20, 100, 200, 50);
+    String updateUsersCount;
 
     public OrderPage_StoreDocuments() {
         System.out.println("UserIDs: ID" + user_ID + "#001S");
@@ -230,7 +231,7 @@ public class OrderPage_StoreDocuments extends Component implements ActionListene
             int tempOrderTableSize= Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt"));
             int updatedOrderTableSize= tempOrderTableSize+1;
             wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt", String.valueOf(updatedOrderTableSize));
-            PreviousOrders previousOrders= new PreviousOrders();
+            new PreviousOrders();
             //System.out.println("Adr: " + address + "|| Notes: " + notes + "|| WorkingTime: " + time + "|| Boxes: " + boxes + "|| Lifts: " + elevator + "|| Stāvs:  " + floor + "|| ID: " + userID + "|| Time: " + currentTime);
 
         } else {

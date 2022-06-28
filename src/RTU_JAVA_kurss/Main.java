@@ -1,6 +1,6 @@
 package RTU_JAVA_kurss;
 
-import RTU_JAVA_kurss.Project.*;
+import RTU_JAVA_kurss.Project.MainPage;
 
 public class Main {
     public static void main(String[] args) {

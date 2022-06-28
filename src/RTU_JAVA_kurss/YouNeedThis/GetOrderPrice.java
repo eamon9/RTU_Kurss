@@ -5,10 +5,10 @@ import java.text.DecimalFormat;
 public class GetOrderPrice {
     public String getOrderPrice(String boxes, String floor) {
         DecimalFormat dc = new DecimalFormat("0.00");
-        double orderPrice, orderBoxPrise = 1.00;
+        double orderPrice, orderBoxPrise;
         int orderBoxes = Integer.parseInt(boxes), orderFloor = Integer.parseInt(floor);
         if(orderBoxes < 100) {
-
+            orderBoxPrise= 1.00;
         } else if (orderBoxes < 300) {
             orderBoxPrise = 0.90;
         } else if (orderBoxes < 500) {
@@ -17,10 +17,8 @@ public class GetOrderPrice {
             orderBoxPrise = 0.70;
         } else if (orderBoxes < 10000) {
             orderBoxPrise = 0.60;
-        } else if (orderBoxes >= 10000) {
-            orderBoxPrise = 0.50;
         } else {
-            System.out.println("Upsī, kļūdiņa! ");
+            orderBoxPrise = 0.50;
         }
 
         if (orderFloor < 1) {
