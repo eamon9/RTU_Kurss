@@ -118,7 +118,7 @@ public class AdministratorPage implements ActionListener {
 
         // no datu bāzes izņem visus lietotāja ID un ievieto Array
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT userId FROM users ORDER BY userID");
             while (resultSet.next()) {
@@ -151,7 +151,7 @@ public class AdministratorPage implements ActionListener {
 
             //šim vajag izmantot funkciju GetCount...
             try { // saskaita cik kopā ir klientu ir saglabāti datubāzē
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
                 Statement statement = connection.createStatement();
                 ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM users");
                 while (getColumnSize.next()) {
@@ -174,7 +174,7 @@ public class AdministratorPage implements ActionListener {
             System.out.println("ID= " + userNr);
 
             try { //izveido dropdown sarakstu ar orderiem pēc lietotāja ID
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT orderId FROM orders WHERE UserID=" + userNr + " ORDER BY orderID");
                 while (resultSet.next()) {
@@ -217,7 +217,7 @@ public class AdministratorPage implements ActionListener {
             System.out.println("#" + orderNr);
 
             try { // piepilda listsArray ar vērtībām
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE OrderID=" + orderNr);
                 while (resultSet.next()) {

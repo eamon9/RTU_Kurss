@@ -128,7 +128,7 @@ public class PreviousOrders implements ActionListener, MouseListener {
 
         //currentUser
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT OrderId FROM orders WHERE userID=" + currentUser + " ORDER BY OrderID");
             while (resultSet.next()) {
@@ -170,7 +170,7 @@ public class PreviousOrders implements ActionListener, MouseListener {
             System.out.println("OrderID= " + orderNr);
 
             try { // piepilda listsArray ar vērtībām
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE OrderID=" + orderNr);
                 while (resultSet.next()) {
