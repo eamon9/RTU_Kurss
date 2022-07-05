@@ -1,8 +1,8 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.Extensions.MyFrame;
-import RTU_JAVA_kurss.Extensions.MyTransparentLabel;
-import RTU_JAVA_kurss.Extensions.MyTransparentTextLabel;
+import RTU_JAVA_kurss.MyExtensions.MyFrame;
+import RTU_JAVA_kurss.MyExtensions.MyTransparentLabel;
+import RTU_JAVA_kurss.MyExtensions.MyTransparentTextLabel;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetOrdersCountFromUser;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
@@ -95,7 +95,7 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
         if (e.getSource().equals(sideLabel2)) {
 
             try { // saskaita cik kopā ir, konkrētam klientam pasūtījumu saglabāti datubāzē un iegūto skaitu saglabā text datnē
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
                 Statement statement = connection.createStatement();
                 ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM orders WHERE UserID="+currentUser);
                 while (getColumnSize.next()) {

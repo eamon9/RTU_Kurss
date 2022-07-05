@@ -1,4 +1,4 @@
-package RTU_JAVA_kurss.Extensions;
+package RTU_JAVA_kurss.MyExtensions;
 
 import javax.swing.*;
 import java.awt.*;

@@ -9,7 +9,7 @@ public class GetOrdersInfo {
     public String getOrdersInfo(String orderID, String search) {
         String info = "";
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderID=" + orderID); //piem. orderID= 1;
             while (resultSet.next()) {

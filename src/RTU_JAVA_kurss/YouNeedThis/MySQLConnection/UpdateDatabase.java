@@ -15,7 +15,7 @@ public class UpdateDatabase {
             answer = decline;
         }
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             PreparedStatement preparedStmt = connection.prepareStatement("UPDATE orders SET accept = ? WHERE OrderID = ?");
             PreparedStatement preparedStmt2 = connection.prepareStatement("UPDATE orders SET admin_note = ? WHERE OrderID = ?");
             preparedStmt.setString(1, answer);

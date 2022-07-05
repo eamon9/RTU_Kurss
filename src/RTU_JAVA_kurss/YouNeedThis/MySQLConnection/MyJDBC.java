@@ -5,7 +5,7 @@ import java.sql.*;
 public class MyJDBC {
     public static void main(String[] args) {
         /*try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             //ResultSet resultSet= statement.executeQuery("UPDATE orders SET accept = ? WHERE OrderID = ?");
             PreparedStatement preparedStmt= connection.prepareStatement("UPDATE orders SET accept = ? WHERE OrderID = ?");
             PreparedStatement preparedStmt2= connection.prepareStatement("UPDATE orders SET admin_note = ? WHERE OrderID = ?");
@@ -22,7 +22,7 @@ public class MyJDBC {
 
         /*try {
 
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
 
             Statement statement = connection.createStatement();
 
@@ -44,7 +44,7 @@ public class MyJDBC {
         }*/
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT accept FROM orders WHERE orderID="+8);
             while (resultSet.next()) {

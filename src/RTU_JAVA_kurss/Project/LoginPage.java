@@ -1,6 +1,6 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.Extensions.*;
+import RTU_JAVA_kurss.MyExtensions.*;
 import RTU_JAVA_kurss.User;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUserInfo;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
@@ -163,7 +163,7 @@ public class LoginPage extends Component implements ActionListener, MouseListene
         User user = null;
         final String DB_URL = "jdbc:mysql://localhost:3306/JAVA_IT";
         final String USERNAME = "root";
-        final String PASSWORD = "e6127609-";
+        final String PASSWORD = "";
 
         try {
             Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);

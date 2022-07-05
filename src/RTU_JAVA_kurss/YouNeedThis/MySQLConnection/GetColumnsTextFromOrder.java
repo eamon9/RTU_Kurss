@@ -12,7 +12,7 @@ public class GetColumnsTextFromOrder {
         String columnName = "";
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "e6127609-");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT "+column+" FROM orders WHERE orderID="+OrderID);
             while (resultSet.next()) {

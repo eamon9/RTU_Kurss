@@ -1,6 +1,6 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.Extensions.*;
+import RTU_JAVA_kurss.MyExtensions.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

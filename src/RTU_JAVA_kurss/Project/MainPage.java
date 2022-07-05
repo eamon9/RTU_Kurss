@@ -1,8 +1,8 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.Extensions.MyButton;
-import RTU_JAVA_kurss.Extensions.MyFrame;
-import RTU_JAVA_kurss.Extensions.MyLabel;
+import RTU_JAVA_kurss.MyExtensions.MyButton;
+import RTU_JAVA_kurss.MyExtensions.MyFrame;
+import RTU_JAVA_kurss.MyExtensions.MyLabel;
 
 import javax.swing.*;
 import java.awt.*;

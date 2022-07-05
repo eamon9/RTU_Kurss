@@ -1,6 +1,6 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.Extensions.*;
+import RTU_JAVA_kurss.MyExtensions.*;
 import RTU_JAVA_kurss.OrderG;
 import RTU_JAVA_kurss.YouNeedThis.GetCurrentTime;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
@@ -244,7 +244,7 @@ public class OrderPage_StoreDocuments extends Component implements ActionListene
         OrderG orderG = null;
         final String DB_URL = "jdbc:mysql://localhost:3306/JAVA_IT"; //jānorāda datubāzes lokācija, kas jau iepriekš ir izveidota
         final String USERNAME = "root"; // šis ir noklusējuma username
-        final String PASSWORD = "e6127609-"; // šī ir izveidotā parole iekš MySQL
+        final String PASSWORD = ""; // šī ir izveidotā parole iekš MySQL
 
         try {
             Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);

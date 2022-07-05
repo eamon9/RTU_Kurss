@@ -1,18 +1,17 @@
 package RTU_JAVA_kurss.Project;
 
-import RTU_JAVA_kurss.Extensions.*;
+import RTU_JAVA_kurss.MyExtensions.*;
 import RTU_JAVA_kurss.User;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUsersCount;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
+import RTU_JAVA_kurss.YouNeedThis.Validation;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RegistrationPage extends Component implements ActionListener {
     GetUsersCount guc= new GetUsersCount();
@@ -58,9 +57,6 @@ public class RegistrationPage extends Component implements ActionListener {
 
     MyLabel[] labelsForJuridical = new MyLabel[]{companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
     MyTextField[] juridicalTF = new MyTextField[]{companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
-
-    String regex = "^(.+)@(.+)$";
-    Pattern pattern = Pattern.compile(regex);
 
     public RegistrationPage() {
         personGroup = new ButtonGroup(); // grupēšana nepieciešama, lai varētu atzīmēt tikai vienu no izvēlētajiem variantiem
@@ -143,6 +139,7 @@ public class RegistrationPage extends Component implements ActionListener {
     User user;
 
     private void registerUser() {
+        Validation validation= new Validation();
         String name = nameTF.getText().substring(0,1).toUpperCase()+nameTF.getText().substring(1);
         String surname = surnameTF.getText().substring(0,1).toUpperCase()+surnameTF.getText().substring(1);
         String mail = mailTF.getText();
@@ -150,14 +147,12 @@ public class RegistrationPage extends Component implements ActionListener {
         String password = String.valueOf(passwordTF.getPassword());
         String repeatPassword= String.valueOf(repeatPasswordTF.getPassword());
 
-        Matcher matcher= pattern.matcher(mail);
-
         if (name.isEmpty() || surname.isEmpty() || mail.isEmpty() || mobile.isEmpty() || password.isEmpty() || repeatPassword.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Lūdzu aizpildiet visus laukus", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (matcher.matches()!=true) {
+        if(!validation.validate(mail)) {
             JOptionPane.showMessageDialog(this, "Ievadiet derīgu e-pastu!", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -206,7 +201,7 @@ public class RegistrationPage extends Component implements ActionListener {
         User user = null;
         final String DB_URL = "jdbc:mysql://localhost:3306/JAVA_IT"; //jānorāda datubāzes lokācija, kas jau iepriekš ir izveidota
         final String USERNAME = "root"; // šis ir noklusējuma username
-        final String PASSWORD = "e6127609-"; // šī ir izveidotā parole iekš MySQL
+        final String PASSWORD = ""; // šī ir izveidotā parole iekš MySQL
 
         try {
             Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
