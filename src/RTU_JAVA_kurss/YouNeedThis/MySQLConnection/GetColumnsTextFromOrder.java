@@ -14,12 +14,12 @@ public class GetColumnsTextFromOrder {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT "+column+" FROM orders WHERE orderID="+OrderID);
+            ResultSet resultSet = statement.executeQuery("SELECT " + column + " FROM orders WHERE orderID=" + OrderID);
             while (resultSet.next()) {
-                columnName= resultSet.getString(column);
-                if(columnName== null || columnName.length()== 0) {
-                    columnName= "Gaida";
-                } else{
+                columnName = resultSet.getString(column);
+                if (columnName == null || columnName.length() == 0) {
+                    columnName = "Gaida";
+                } else {
                     columnName = resultSet.getString(column);
                 }
 

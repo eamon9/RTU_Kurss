@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PreviousOrders implements ActionListener, MouseListener {
-    GetMonthPrise gmp= new GetMonthPrise();
+    MyColor myColor = new MyColor();
+    GetMonthPrise gmp = new GetMonthPrise();
     GetColumnsTextFromOrder gct = new GetColumnsTextFromOrder();
     GetLastOrdersInfo gloi = new GetLastOrdersInfo();
     GetTextFromFile gtff = new GetTextFromFile();
@@ -33,28 +34,24 @@ public class PreviousOrders implements ActionListener, MouseListener {
     MyFrame previousOrdersFrame = new MyFrame("Document Solutions Previous Orders Page");
     MyLabel topTextLabel = new MyLabel("(Glabāšana)", 300, 10, 400, 30, 20);
 
-    MyTextArea addressTextArea= new MyTextArea(530, 40, 220, 150);
+    MyTextArea addressTextArea = new MyTextArea(530, 40, 220, 150);
     MyLabel workingTimeTextLabel = new MyLabel("Darba laiks: ", 250, 40, 500, 20, 16);
     MyLabel boxesTextLabel = new MyLabel("Kastes: ", 250, 60, 500, 20, 16);
     MyLabel lvlTextLabel = new MyLabel("Stāvs: ", 250, 80, 500, 20, 16);
-    MyTextArea notesTextArea= new MyTextArea(530, 200, 220, 150);
+    MyTextArea notesTextArea = new MyTextArea(530, 200, 220, 150);
 
     MyLabel totalPaymentTextLabel = new MyLabel("Kopā: ", 250, 250, 500, 30, 20);
     MyLabel monthlyPaymentTextLabel = new MyLabel("*Mēneša maksa: ", 250, 290, 500, 20, 16);
     MyLabel statussTextLabel = new MyLabel("Statuss: ", 250, 310, 500, 20, 16);
     MyTextArea noteFromAdminTextF = new MyTextArea(245, 355, 280, 100);
 
-
-
     MyButton showOrderBtn = new MyButton("Parādīt", 25, 80, 200, 50);
     MyButton showStatussBtn = new MyButton("Statuss", 25, 355, 200, 50);
 
-
     MyComboBox ordersBox = new MyComboBox("OrderID", 50, 20, 150, 50);
 
-    //int orderTableSize;
-    String orderNr = "1", orderFromList = "", addressFromList = "", notesFromList = "", addressText= "Adrese: ", notesText= "Piezīmes: ",
-            timeFromList = "", boxesFromList = "", elevatorFromList = "", floorFromList = "", dateFromList = "", userID = "", statuss= "", adminNote="";
+    String orderNr = "1", orderFromList = "", addressFromList = "", notesFromList = "", addressText = "Adrese: ", notesText = "Piezīmes: ",
+            timeFromList = "", boxesFromList = "", elevatorFromList = "", floorFromList = "", dateFromList = "", userID = "", statuss = "", adminNote = "";
     String[] listsArray = new String[]{orderFromList, addressFromList, notesFromList, timeFromList, boxesFromList, elevatorFromList, floorFromList, dateFromList, userID};
     String[] databaseTitlesArray = new String[]{"OrderID", "address", "notes", "time", "boxes", "elevator", "floor", "date_time", "UserID"};
     int orderTableSize = Integer.parseInt(gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt"));
@@ -82,22 +79,22 @@ public class PreviousOrders implements ActionListener, MouseListener {
         showOrderBtn.setVisible(false);
         noteFromAdminTextF.setVisible(false);
         noteFromAdminTextF.setEditable(false);
-        noteFromAdminTextF.setBackground(new Color(46, 149, 169, 255)); //new Color(46, 149, 169, 255)
+        noteFromAdminTextF.setBackground(myColor.LABEL_TRANSPARENT);
         noteFromAdminTextF.setText("*TEST*\n*TEST*\n*TEST*\n*TEST*");
 
         addressTextArea.setEditable(false);
         addressTextArea.setText(addressText);
-        addressTextArea.setForeground(new Color(7, 105, 64, 190));
-        addressTextArea.setBackground(new Color(46, 149, 169, 255));
+        addressTextArea.setForeground(myColor.TXT_GREEN);
+        addressTextArea.setBackground(myColor.LABEL_TRANSPARENT);
         addressTextArea.setFont(new Font("Times New Roman", Font.BOLD, 16));
         notesTextArea.setEditable(false);
         notesTextArea.setText(notesText);
-        notesTextArea.setForeground(new Color(7, 105, 64, 190));
-        notesTextArea.setBackground(new Color(46, 149, 169, 255));
+        notesTextArea.setForeground(myColor.TXT_GREEN);
+        notesTextArea.setBackground(myColor.LABEL_TRANSPARENT);
         notesTextArea.setFont(new Font("Times New Roman", Font.BOLD, 16));
 
-        topTextLabel.setText("ID= " + currentUser + " #00" + currentOrderID +" "+orderType+" "+ orderDateTime);
-        addressTextArea.setText(addressText+ address);
+        topTextLabel.setText("ID= " + currentUser + " #00" + currentOrderID + " " + orderType + " " + orderDateTime);
+        addressTextArea.setText(addressText + address);
 
         workingTimeTextLabel.setText("Darba laiks: " + workingTime);
         boxesTextLabel.setText("Kastes(gb): " + boxes);
@@ -106,7 +103,7 @@ public class PreviousOrders implements ActionListener, MouseListener {
         } else if (isElevator.equals("0")) {
             lvlTextLabel.setText("Stāvs: " + floor + " (Lifta NAV!)");
         }
-        notesTextArea.setText(notesText+notes);
+        notesTextArea.setText(notesText + notes);
         totalPaymentTextLabel.setText("Kopā: " + gop.getOrderPrice(boxes, floor) + "€ + PVN 21%");
         monthlyPaymentTextLabel.setText("*Mēneša maksa: " + gmp.getMonthPrise(boxes) + "€ + PVN 21%");
         statussTextLabel.setText("Statuss: ");
@@ -159,12 +156,12 @@ public class PreviousOrders implements ActionListener, MouseListener {
             showStatussBtn.setVisible(false);
             noteFromAdminTextF.setVisible(false);
             statussTextLabel.setText("Statuss: ");
-            statussTextLabel.setForeground(new Color(7, 105, 64, 190));
+            statussTextLabel.setForeground(myColor.TXT_GREEN);
         }
 
         if (e.getSource().equals(showOrderBtn)) {
-            showOrderBtn.setBackground(new Color(141, 210, 93));
-            showStatussBtn.setBackground(new Color(184, 229, 154));
+            showOrderBtn.setBackground(myColor.BTN_PRESS);
+            showStatussBtn.setBackground(myColor.BTN);
             showStatussBtn.setVisible(true);
             orderNr = (String) ordersBox.getSelectedItem(); // OrderNr glabā izvēlētā pasūtījuma OrderID
             System.out.println("OrderID= " + orderNr);
@@ -187,8 +184,8 @@ public class PreviousOrders implements ActionListener, MouseListener {
                     dateFromList = listsArray[7];
                     userID = listsArray[8];
                     System.out.println(Arrays.toString(listsArray));
-                    topTextLabel.setText("ID= " + userID + " #00" + orderNr +" "+ orderType +" "+ dateFromList);
-                    addressTextArea.setText(addressText+addressFromList);
+                    topTextLabel.setText("ID= " + userID + " #00" + orderNr + " " + orderType + " " + dateFromList);
+                    addressTextArea.setText(addressText + addressFromList);
                     workingTimeTextLabel.setText("Darba laiks: " + timeFromList);
                     boxesTextLabel.setText("Kastes(gb): " + boxesFromList);
                     if (elevatorFromList.equals("1")) {
@@ -196,7 +193,7 @@ public class PreviousOrders implements ActionListener, MouseListener {
                     } else if (elevatorFromList.equals("0")) {
                         lvlTextLabel.setText("Stāvs: " + floorFromList + " (Lifta NAV!)");
                     }
-                    notesTextArea.setText(notesText+notesFromList);
+                    notesTextArea.setText(notesText + notesFromList);
                     totalPaymentTextLabel.setText("Kopā: " + gop.getOrderPrice(boxesFromList, floorFromList) + "€ + PVN 21%");
                     monthlyPaymentTextLabel.setText("*Mēneša maksa: " + gmp.getMonthPrise(boxes) + "€ + PVN 21%");
                 }
@@ -205,25 +202,29 @@ public class PreviousOrders implements ActionListener, MouseListener {
             }
         }
 
-        if(e.getSource().equals(showStatussBtn)) {
-            showStatussBtn.setBackground(new Color(141, 210, 93));
-            showOrderBtn.setBackground(new Color(184, 229, 154));
-            statuss= gct.getColumnsTextFromOrder(orderNr, "accept");
-            adminNote= gct.getColumnsTextFromOrder(orderNr, "admin_note");
-            if(statuss.equals("Atteikts!")) {
-                statussTextLabel.setText("Statuss: "+statuss);
-                statussTextLabel.setForeground(new Color(112, 5, 11));
-                noteFromAdminTextF.setForeground(new Color(112, 5, 11));
-                noteFromAdminTextF.setText(adminNote);
-            } else if(statuss.equals("Akceptēts!")) {
-                statussTextLabel.setText("Statuss: "+statuss);
-                statussTextLabel.setForeground(new Color(7, 105, 64, 190));
-                noteFromAdminTextF.setForeground(new Color(7, 105, 64, 190));
-                noteFromAdminTextF.setText(adminNote);
-            } else if(statuss.equals("Gaida")) {
-                statussTextLabel.setText("Statuss: Gaida atbildi!");
-                statussTextLabel.setForeground(new Color(247, 211, 28));
-                noteFromAdminTextF.setText("");
+        if (e.getSource().equals(showStatussBtn)) {
+            showStatussBtn.setBackground(myColor.BTN_PRESS);
+            showOrderBtn.setBackground(myColor.BTN);
+            statuss = gct.getColumnsTextFromOrder(orderNr, "accept");
+            adminNote = gct.getColumnsTextFromOrder(orderNr, "admin_note");
+            switch (statuss) {
+                case "Atteikts!" -> {
+                    statussTextLabel.setText("Statuss: " + statuss);
+                    statussTextLabel.setForeground(myColor.TXT_NOTE_RED);
+                    noteFromAdminTextF.setForeground(myColor.TXT_NOTE_RED);
+                    noteFromAdminTextF.setText(adminNote);
+                }
+                case "Akceptēts!" -> {
+                    statussTextLabel.setText("Statuss: " + statuss);
+                    statussTextLabel.setForeground(myColor.TXT_GREEN);
+                    noteFromAdminTextF.setForeground(myColor.TXT_GREEN);
+                    noteFromAdminTextF.setText(adminNote);
+                }
+                case "Gaida" -> {
+                    statussTextLabel.setText("Statuss: Gaida atbildi!");
+                    statussTextLabel.setForeground(myColor.TXT_NOTE_YELLOW);
+                    noteFromAdminTextF.setText("");
+                }
             }
             noteFromAdminTextF.setVisible(true);
         }

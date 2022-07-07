@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class OrderPage_ShreddingDocuments implements ActionListener, MouseListener {
+    MyColor myColor = new MyColor();
     MyFrame shredDocumentsFrame = new MyFrame("Document Solutions Shredding Documents Page");
     MyTransparentLabel label_1 = new MyTransparentLabel(65, 100, 240, 240);
     MyTransparentLabel label_2 = new MyTransparentLabel(330, 100, 240, 240);
@@ -122,26 +123,26 @@ public class OrderPage_ShreddingDocuments implements ActionListener, MouseListen
             new PreviousOrders();
         }
         if (e.getSource().equals(yesBtn1)) {
-            yesBtn1.setBackground(new Color(141, 210, 93));
-            noBtn1.setBackground(new Color(184, 229, 154));
+            yesBtn1.setBackground(myColor.BTN_PRESS);
+            noBtn1.setBackground(myColor.BTN);
             label_5_0.setVisible(false);
             label_5.setVisible(true);
         }
         if (e.getSource().equals(noBtn1)) {
-            yesBtn1.setBackground(new Color(184, 229, 154));
-            noBtn1.setBackground(new Color(141, 210, 93));
+            yesBtn1.setBackground(myColor.BTN);
+            noBtn1.setBackground(myColor.BTN_PRESS);
             label_5.setVisible(false);
             label_5_0.setVisible(true);
         }
         if (e.getSource().equals(yesBtn)) {
-            yesBtn.setBackground(new Color(141, 210, 93));
-            noBtn.setBackground(new Color(184, 229, 154));
+            yesBtn.setBackground(myColor.BTN_PRESS);
+            noBtn.setBackground(myColor.BTN);
             boxTextF2.setVisible(false);
             boxSideText2.setVisible(false);
         }
         if (e.getSource().equals(noBtn)) {
-            yesBtn.setBackground(new Color(184, 229, 154));
-            noBtn.setBackground(new Color(141, 210, 93));
+            yesBtn.setBackground(myColor.BTN);
+            noBtn.setBackground(myColor.BTN_PRESS);
             boxTextF2.setVisible(true);
             boxSideText2.setVisible(true);
         }

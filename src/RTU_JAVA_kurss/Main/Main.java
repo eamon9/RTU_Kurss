@@ -1,4 +1,4 @@
-package RTU_JAVA_kurss;
+package RTU_JAVA_kurss.Main;
 
 import RTU_JAVA_kurss.Project.MainPage;
 

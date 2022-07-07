@@ -1,7 +1,7 @@
 package RTU_JAVA_kurss.Project;
 
 import RTU_JAVA_kurss.MyExtensions.*;
-import RTU_JAVA_kurss.User;
+import RTU_JAVA_kurss.Main.User;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUsersCount;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
@@ -14,7 +14,8 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class RegistrationPage extends Component implements ActionListener {
-    GetUsersCount guc= new GetUsersCount();
+    MyColor myColor = new MyColor();
+    GetUsersCount guc = new GetUsersCount();
     GetTextFromFile gtff = new GetTextFromFile();
     WriteTextToFile wttf = new WriteTextToFile();
 
@@ -57,8 +58,10 @@ public class RegistrationPage extends Component implements ActionListener {
 
     MyLabel[] labelsForJuridical = new MyLabel[]{companyNameLabel, companyRegLabel, pvnLabel, bankLabel, companyAdressLabel, ibanLabel};
     MyTextField[] juridicalTF = new MyTextField[]{companyNameTF, companyRegTF, pvnTF, bankTF, companyAdressTF, ibanTF};
+    User user;
 
     public RegistrationPage() {
+        MyColor c = new MyColor();
         personGroup = new ButtonGroup(); // grupēšana nepieciešama, lai varētu atzīmēt tikai vienu no izvēlētajiem variantiem
         personGroup.add(individualRadioBtn);
         personGroup.add(juridicalRadioBtn);
@@ -107,14 +110,14 @@ public class RegistrationPage extends Component implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(backBtn)) {
-            backBtn.setBackground(new Color(141, 210, 93));
-            nextBtn.setBackground(new Color(184, 229, 154));
+            backBtn.setBackground(myColor.BTN_PRESS);
+            nextBtn.setBackground(myColor.BTN);
             registrationPageFrame.dispose();
             new LoginPage();
         }
         if (e.getSource().equals(nextBtn)) {
-            nextBtn.setBackground(new Color(141, 210, 93));
-            backBtn.setBackground(new Color(184, 229, 154));
+            nextBtn.setBackground(myColor.BTN_PRESS);
+            backBtn.setBackground(myColor.BTN);
             wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/uEmail.txt", mailTF.getText());
             registerUser();
         }
@@ -136,23 +139,21 @@ public class RegistrationPage extends Component implements ActionListener {
         }
     } //End actionPerformed()
 
-    User user;
-
     private void registerUser() {
-        Validation validation= new Validation();
-        String name = nameTF.getText().substring(0,1).toUpperCase()+nameTF.getText().substring(1);
-        String surname = surnameTF.getText().substring(0,1).toUpperCase()+surnameTF.getText().substring(1);
+        Validation validation = new Validation();
+        String name = nameTF.getText().substring(0, 1).toUpperCase() + nameTF.getText().substring(1);
+        String surname = surnameTF.getText().substring(0, 1).toUpperCase() + surnameTF.getText().substring(1);
         String mail = mailTF.getText();
         String mobile = mobNrTF.getText();
         String password = String.valueOf(passwordTF.getPassword());
-        String repeatPassword= String.valueOf(repeatPasswordTF.getPassword());
+        String repeatPassword = String.valueOf(repeatPasswordTF.getPassword());
 
         if (name.isEmpty() || surname.isEmpty() || mail.isEmpty() || mobile.isEmpty() || password.isEmpty() || repeatPassword.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Lūdzu aizpildiet visus laukus", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if(!validation.validate(mail)) {
+        if (!validation.validate(mail)) {
             JOptionPane.showMessageDialog(this, "Ievadiet derīgu e-pastu!", "Mēģini vēlreiz", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -172,12 +173,12 @@ public class RegistrationPage extends Component implements ActionListener {
             return;
         }
 
-        if (!mobile.substring(0,1).equals("2") && !mobile.substring(0,1).equals("6")) {
+        if (mobile.charAt(0) != '2' && mobile.charAt(0) != '6') {
             JOptionPane.showMessageDialog(this, "Telefona nr. jābūt reģistrētam LV", "Mēģini vēlreiz!", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (mobile.length()!=8) {
+        if (mobile.length() != 8) {
             JOptionPane.showMessageDialog(this, "Telefona nr. jābūt 8ciparu garam!", "Mēģini vēlreiz!", JOptionPane.ERROR_MESSAGE);
             return;
         }

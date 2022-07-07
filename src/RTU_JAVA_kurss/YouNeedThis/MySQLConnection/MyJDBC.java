@@ -46,13 +46,13 @@ public class MyJDBC {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT accept FROM orders WHERE orderID="+8);
+            ResultSet resultSet = statement.executeQuery("SELECT accept FROM orders WHERE orderID=" + 8);
             while (resultSet.next()) {
-                String statuss= resultSet.getString("accept");
-                if(statuss== null || statuss.length()== 0) {
-                    statuss= "Gaida";
+                String statuss = resultSet.getString("accept");
+                if (statuss == null || statuss.length() == 0) {
+                    statuss = "Gaida";
                     System.out.println(statuss);
-                } else{
+                } else {
                     statuss = resultSet.getString("accept");
                     System.out.println(statuss);
                 }

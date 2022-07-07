@@ -5,10 +5,10 @@ import java.text.DecimalFormat;
 public class GetOrderPrice {
     public String getOrderPrice(String boxes, String floor) { //divi argumenti
         DecimalFormat dc = new DecimalFormat("0.00"); // lai skaitlim aiz komata ir divas nulles
-        double orderPrice, orderBoxPrise; //int 1 , double 1.0
-        int orderBoxes = Integer.parseInt(boxes), orderFloor = Integer.parseInt(floor); //From String to Int
-        if(orderBoxes < 100) {
-            orderBoxPrise= 1.00;
+        int orderBoxes = Integer.parseInt(boxes), orderFloor = Integer.parseInt(floor), palletSize= 30; //From String to Int
+        double orderPrice = 0, orderBoxPrise= 1, palletPrice= 15, smallOrderTax= 7;
+        if (orderBoxes < 100) {
+            orderBoxPrise = 1.00;
         } else if (orderBoxes < 300) {
             orderBoxPrise = 0.90;
         } else if (orderBoxes < 500) {
@@ -21,14 +21,31 @@ public class GetOrderPrice {
             orderBoxPrise = 0.50;
         }
 
-        if (orderFloor < 1) { //ir lifts orderFloor glabā skaitli 0
-            orderPrice = (orderBoxes * orderBoxPrise) + (((int)orderBoxes / 30) * 15); //15eur- paletes cena, 30kastes uz vienas paletes
-        } else {
-            orderPrice = (orderBoxes * orderBoxPrise) + ((((int)orderBoxes / 30) * 15) * orderFloor);
+        if (orderFloor == 0) { //ir lifts orderFloor glabā skaitli 0
+            orderPrice = (orderBoxes * orderBoxPrise) + getLodingCosts(orderBoxes, palletSize, palletPrice, orderFloor);
+        } else if(orderFloor >= 1){
+            orderPrice = (orderBoxes * orderBoxPrise) + getLodingCosts(orderBoxes, palletSize, palletPrice, orderFloor);
+        } else if(orderFloor < 0){
+            orderPrice = (orderBoxes * orderBoxPrise) + getLodingCosts(orderBoxes, palletSize, palletPrice, orderFloor);
+        } else{
+            System.out.println("Kautkas nogāja greizi!");
         }
-        if (orderBoxes < 30) {
-            orderPrice += 7;
+
+        if (orderBoxes < palletSize) {
+            orderPrice += smallOrderTax;
         }
         return dc.format(orderPrice);
+    }
+
+    public double getLodingCosts(int boxes, int palletSize, double palletPrice, int floor) {
+        int pallets= boxes/palletSize;
+        double fullPrice= pallets*palletPrice;
+        if(floor > 0) {
+            fullPrice*= floor;
+        } else if(floor < 0) {
+            fullPrice*= floor-(floor*2);
+        }
+
+        return fullPrice;
     }
 }

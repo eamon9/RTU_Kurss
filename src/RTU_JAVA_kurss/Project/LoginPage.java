@@ -1,7 +1,7 @@
 package RTU_JAVA_kurss.Project;
 
 import RTU_JAVA_kurss.MyExtensions.*;
-import RTU_JAVA_kurss.User;
+import RTU_JAVA_kurss.Main.User;
 import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetUserInfo;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class LoginPage extends Component implements ActionListener, MouseListener {
+    MyColor myColor = new MyColor();
     WriteTextToFile wttf = new WriteTextToFile();
     GetTextFromFile gtff = new GetTextFromFile();
     GetUserInfo gui = new GetUserInfo();
@@ -32,7 +33,6 @@ public class LoginPage extends Component implements ActionListener, MouseListene
     MyButton loginBtn = new MyButton("Pieslēgties", 80, 300, 200, 50);
     MyButton registrationBtn = new MyButton("Reģistrēties", 80, 140, 200, 50);
     JTextField textField = new JTextField(); // ??
-
 
 
     public LoginPage() {
@@ -71,7 +71,7 @@ public class LoginPage extends Component implements ActionListener, MouseListene
             if (mail.equals("info@documentsolutions.lv") && password.equals("administrator")) {
                 loginPageFrame.dispose();
                 new AdministratorPage();
-            } else if(mail.equals("admin") && password.equals("admin")){
+            } else if (mail.equals("admin") && password.equals("admin")) {
                 loginPageFrame.dispose();
                 new AdministratorPage();
             } else {
@@ -110,12 +110,12 @@ public class LoginPage extends Component implements ActionListener, MouseListene
         // kas pārbauda, vai ir šāds lietotājvārds ar attiecīgo paroli
         // !!!!!!!                                     !!!!!!!!!!!!!!!!!!!!!!
         if (e.getSource().equals(loginBtn)) {
-            loginBtn.setBackground(new Color(141, 210, 93));
-            registrationBtn.setBackground(new Color(184, 229, 154));
+            loginBtn.setBackground(myColor.BTN_PRESS);
+            registrationBtn.setBackground(myColor.BTN);
         } //End if else statement
         if (e.getSource().equals(registrationBtn)) {
-            registrationBtn.setBackground(new Color(141, 210, 93));
-            loginBtn.setBackground(new Color(184, 229, 154));
+            registrationBtn.setBackground(myColor.BTN_PRESS);
+            loginBtn.setBackground(myColor.BTN);
             loginPageFrame.dispose();
             new RegistrationPage();
         }

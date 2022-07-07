@@ -1,5 +1,6 @@
 package RTU_JAVA_kurss.Project;
 
+import RTU_JAVA_kurss.MyExtensions.MyColor;
 import RTU_JAVA_kurss.MyExtensions.MyFrame;
 import RTU_JAVA_kurss.MyExtensions.MyTransparentLabel;
 import RTU_JAVA_kurss.MyExtensions.MyTransparentTextLabel;
@@ -7,7 +8,6 @@ import RTU_JAVA_kurss.YouNeedThis.MySQLConnection.GetOrdersCountFromUser;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.GetTextFromFile;
 import RTU_JAVA_kurss.YouNeedThis.TxtFileConnection.WriteTextToFile;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,9 +18,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class OrderPageSelectItem implements ActionListener, MouseListener {
-    GetOrdersCountFromUser goc= new GetOrdersCountFromUser();
-    WriteTextToFile wttf= new WriteTextToFile();
-    GetTextFromFile gtff= new GetTextFromFile();
+    MyColor myColor = new MyColor();
+    GetOrdersCountFromUser goc = new GetOrdersCountFromUser();
+    WriteTextToFile wttf = new WriteTextToFile();
+    GetTextFromFile gtff = new GetTextFromFile();
     MyFrame orderPageFrame = new MyFrame("Document Solutions Order Page");
     MyTransparentLabel sideLabel1 = new MyTransparentLabel(65, 100, 365, 500);
     MyTransparentLabel sideLabel2 = new MyTransparentLabel(480, 100, 350, 500);
@@ -33,11 +34,11 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
     MyTransparentTextLabel middleSideTextLabel = new MyTransparentTextLabel("Smalcināšana / iznīcināšana", 10, 20, 240, 100);
     MyTransparentTextLabel rightSideTextLabel = new MyTransparentTextLabel("Arhīva sakārtošana", 40, 20, 240, 100);
 
-    String currentUser= "", ordersSum= "";
+    String currentUser = "", ordersSum = "";
 
     public OrderPageSelectItem() {
         currentUser = gtff.getTextFromFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/users_ID.txt");
-        ordersSum= goc.getOrdersCountFromUser(currentUser);
+        ordersSum = goc.getOrdersCountFromUser(currentUser);
         wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt", ordersSum);
         System.out.println(ordersSum);
 
@@ -97,7 +98,7 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
             try { // saskaita cik kopā ir, konkrētam klientam pasūtījumu saglabāti datubāzē un iegūto skaitu saglabā text datnē
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
                 Statement statement = connection.createStatement();
-                ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM orders WHERE UserID="+currentUser);
+                ResultSet getColumnSize = statement.executeQuery("SELECT COUNT(*) FROM orders WHERE UserID=" + currentUser);
                 while (getColumnSize.next()) {
                     int orderTableSize = Integer.parseInt(getColumnSize.getString("COUNT(*)"));
                     wttf.writeTextToFile("/Users/qwer/eclipse-workspace/IT_Projekts/src/RTU_JAVA_kurss/textFiles/orderTableSize.txt", String.valueOf(orderTableSize));
@@ -126,13 +127,13 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
         MyTransparentLabel[] labels = new MyTransparentLabel[]{leftSideLabel, middleSideLabel, rightSideLabel};
         for (int i = 0; i < labels.length; i++) {
             if (e.getSource().equals(labels[i])) {
-                labels[i].setBackground(new Color(184, 229, 154)); //new Color(46, 149, 169, 255) color before entered
+                labels[i].setBackground(myColor.BTN); //c.myColor("LABEL_TRANSPARENT") color before entered
             }
         }
         MyTransparentLabel[] labels2 = new MyTransparentLabel[]{sideLabel1, sideLabel2};
         for (int i = 0; i < labels2.length; i++) {
             if (e.getSource().equals(labels2[i])) {
-                labels2[i].setBackground(new Color(184, 229, 154)); //new Color(46, 149, 169, 255) color before entered
+                labels2[i].setBackground(myColor.BTN); //c.myColor("LABEL_TRANSPARENT") color before entered
             }
         }
     }
@@ -142,13 +143,13 @@ public class OrderPageSelectItem implements ActionListener, MouseListener {
         MyTransparentLabel[] labels = new MyTransparentLabel[]{leftSideLabel, middleSideLabel, rightSideLabel};
         for (int i = 0; i < labels.length; i++) {
             if (e.getSource().equals(labels[i])) {
-                labels[i].setBackground(new Color(46, 149, 169, 255));
+                labels[i].setBackground(myColor.LABEL_TRANSPARENT);
             }
         }
         MyTransparentLabel[] labels2 = new MyTransparentLabel[]{sideLabel1, sideLabel2};
         for (int i = 0; i < labels2.length; i++) {
             if (e.getSource().equals(labels2[i])) {
-                labels2[i].setBackground(new Color(46, 149, 169, 255));
+                labels2[i].setBackground(myColor.LABEL_TRANSPARENT);
             }
         }
     }

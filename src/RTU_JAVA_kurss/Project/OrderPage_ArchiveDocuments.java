@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class OrderPage_ArchiveDocuments implements ActionListener, MouseListener {
+    MyColor myColor= new MyColor();
     MyFrame archiveDocumentsFrame = new MyFrame("Document Solutions Archive Documents Page");
     MyTransparentLabel label_1 = new MyTransparentLabel(65, 100, 240, 240);
     MyTransparentLabel label_2 = new MyTransparentLabel(330, 100, 240, 240);

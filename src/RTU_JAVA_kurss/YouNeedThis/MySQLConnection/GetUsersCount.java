@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class GetUsersCount {
     public String getUsersCount() {
-        String tableSize= "";
+        String tableSize = "";
         try { // saskaita cik kopā ir klientu ir saglabāti datubāzē
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JAVA_IT", "root", "");
             Statement statement = connection.createStatement();
